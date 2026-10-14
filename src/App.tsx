@@ -69,7 +69,7 @@ const stadiums: Stadium[] = [
     club: 'River Plate',
     position: [-58.4497385, -34.5452932],
     espnVenueId: '10786',
-    kit: 'linear-gradient(45deg, #ffffff 0 36%, #d6111e 36% 64%, #ffffff 64%)'
+    kit: 'linear-gradient(135deg, #ffffff 0 36%, #d6111e 36% 64%, #ffffff 64%)'
   },
   {
     id: 'gasometro',
@@ -106,7 +106,8 @@ const stadiums: Stadium[] = [
     club: 'Argentinos Juniors',
     position: [-58.4726194, -34.6061215],
     espnVenueId: '10785',
-    kit: 'radial-gradient(circle, #e30613 0 52%, #ffffff 53% 66%, #e30613 67%)'
+    // Red with a white sash and a blue line through it
+    kit: 'linear-gradient(45deg, #e30613 0 35%, #ffffff 35% 45%, #1d4fa0 45% 55%, #ffffff 55% 65%, #e30613 65%)'
   },
   {
     id: 'laza',
@@ -133,7 +134,7 @@ const stadiums: Stadium[] = [
     club: 'All Boys',
     position: [-58.4977469, -34.6165101],
     espnVenueId: '10985',
-    kit: 'linear-gradient(45deg, #ffffff 0 36%, #111111 36% 64%, #ffffff 64%)'
+    kit: 'linear-gradient(135deg, #ffffff 0 36%, #111111 36% 64%, #ffffff 64%)'
   },
   {
     id: 'kolbovsky',
@@ -160,8 +161,8 @@ const stadiums: Stadium[] = [
     club: 'Ferro Carril Oeste',
     position: [-58.4478378, -34.6187654],
     espnVenueId: '10981',
-    // Green chevron on white, as on the crest
-    kit: 'conic-gradient(from 130deg at 50% 26%, #1a8a3a 0 100deg, #ffffff 100deg)'
+    // Green chevron on white with a green inner outline, as on the crest
+    kit: 'radial-gradient(circle closest-side, transparent 82%, #1a8a3a 85%), conic-gradient(from 135deg at 50% 36%, #1a8a3a 0 90deg, #ffffff 90deg)'
   },
   {
     id: 'mataderos',
