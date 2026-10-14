@@ -1,11 +1,22 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import * as maplibregl from 'maplibre-gl'
 import mapLibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import './App.css'
+import type { LiveMatch, MatchesResponse } from '../api/matches.ts'
 
 type StadiumStatus = 'live' | 'upcoming' | 'finished' | 'idle'
 type Filter = 'todos' | 'en vivo' | 'próximos' | 'finalizados'
+
+type StadiumMatch = {
+  status: StadiumStatus
+  competition: string
+  kickoff: string
+  score: string
+  minute: string
+  rival: string
+  description: string
+}
 
 type Stadium = {
   id: string
@@ -13,13 +24,12 @@ type Stadium = {
   neighborhood: string
   club: string
   position: [number, number]
-  status: StadiumStatus
-  competition: string
-  kickoff: string
-  score: string
-  minute: string
-  description: string
+  espnTeamId: string
+  // Shown when the club has no real match today
+  placeholder?: StadiumMatch
 }
+
+type StadiumView = Stadium & { match: StadiumMatch }
 
 const stadiums: Stadium[] = [
   {
@@ -28,12 +38,16 @@ const stadiums: Stadium[] = [
     neighborhood: 'La Boca',
     club: 'Boca Juniors',
     position: [-58.3649163, -34.6355171],
-    status: 'live',
-    competition: 'Liga Profesional',
-    kickoff: 'Hoy 20:30',
-    score: '2 - 1',
-    minute: '67’',
-    description: 'Boca lidera en un clásico intenso en el sur del mapa.'
+    espnTeamId: '5',
+    placeholder: {
+      status: 'live',
+      competition: 'Partido de ejemplo',
+      kickoff: 'Hoy 20:30',
+      score: '2 - 1',
+      minute: '67’',
+      rival: 'Rival',
+      description: 'Resultado de ejemplo: Boca no juega de local hoy.'
+    }
   },
   {
     id: 'monumental',
@@ -41,12 +55,7 @@ const stadiums: Stadium[] = [
     neighborhood: 'Belgrano',
     club: 'River Plate',
     position: [-58.4497385, -34.5452932],
-    status: 'upcoming',
-    competition: 'Liga Profesional',
-    kickoff: 'Hoy 21:00',
-    score: 'Por definir',
-    minute: 'Próximo',
-    description: 'River juega de local ante un rival directo.'
+    espnTeamId: '16'
   },
   {
     id: 'gasometro',
@@ -54,12 +63,7 @@ const stadiums: Stadium[] = [
     neighborhood: 'Flores',
     club: 'San Lorenzo',
     position: [-58.4401364, -34.6520908],
-    status: 'finished',
-    competition: 'Primera Nacional',
-    kickoff: 'Hoy 18:00',
-    score: '1 - 0',
-    minute: 'FT',
-    description: 'Cierre con triunfo para el Ciclón en casa.'
+    espnTeamId: '18'
   },
   {
     id: 'amalfitani',
@@ -67,12 +71,7 @@ const stadiums: Stadium[] = [
     neighborhood: 'Liniers',
     club: 'Vélez Sarsfield',
     position: [-58.5206788, -34.6353382],
-    status: 'idle',
-    competition: 'Liga Profesional',
-    kickoff: 'Sin partido',
-    score: 'Sin partido',
-    minute: 'Libre',
-    description: 'Estadio sin actividad de juego en este momento.'
+    espnTeamId: '21'
   },
   {
     id: 'duco',
@@ -80,12 +79,7 @@ const stadiums: Stadium[] = [
     neighborhood: 'Parque Patricios',
     club: 'Huracán',
     position: [-58.3965055, -34.6434694],
-    status: 'upcoming',
-    competition: 'Regional Amateur',
-    kickoff: 'Hoy 19:00',
-    score: 'Por definir',
-    minute: 'Próximo',
-    description: 'Huracán recibe a un rival del interior en un duelo clave.'
+    espnTeamId: '10'
   },
   {
     id: 'maradona',
@@ -93,14 +87,49 @@ const stadiums: Stadium[] = [
     neighborhood: 'La Paternal',
     club: 'Argentinos Juniors',
     position: [-58.4726194, -34.6061215],
-    status: 'live',
-    competition: 'Primera División',
-    kickoff: 'Hoy 20:00',
-    score: '1 - 1',
-    minute: '78’',
-    description: 'Partido parejo con intensidad alta y chances claras.'
+    espnTeamId: '3'
   }
 ]
+
+const noMatch: StadiumMatch = {
+  status: 'idle',
+  competition: 'Liga Profesional',
+  kickoff: 'Sin partido',
+  score: 'Sin partido',
+  minute: 'Libre',
+  rival: '—',
+  description: 'Estadio sin actividad de juego en este momento.'
+}
+
+const REFRESH_MS = 60_000
+
+const kickoffFormat = new Intl.DateTimeFormat('es-AR', {
+  timeZone: 'America/Argentina/Buenos_Aires',
+  hour: '2-digit',
+  minute: '2-digit',
+  hourCycle: 'h23'
+})
+
+function toStadiumMatch(match: LiveMatch, stadium: Stadium): StadiumMatch {
+  const score =
+    match.status === 'upcoming' ? 'Por definir' : `${match.homeScore} - ${match.awayScore}`
+  const description =
+    match.status === 'live'
+      ? `${match.homeTeam} recibe a ${match.awayTeam} en ${stadium.name}.`
+      : match.status === 'finished'
+        ? `Terminó ${match.homeTeam} ${score} ${match.awayTeam}.`
+        : `${match.homeTeam} recibe a ${match.awayTeam} más tarde.`
+
+  return {
+    status: match.status,
+    competition: match.competition,
+    kickoff: `Hoy ${kickoffFormat.format(new Date(match.kickoff))}`,
+    score,
+    minute: match.minute,
+    rival: match.awayTeam,
+    description
+  }
+}
 
 const filters: { key: Filter; label: string }[] = [
   { key: 'todos', label: 'todos' },
@@ -185,13 +214,53 @@ function App() {
   const [activeFilter, setActiveFilter] = useState<Filter>('todos')
   const [selectedId, setSelectedId] = useState('bombonera')
   const [detailOpen, setDetailOpen] = useState(true)
+  const [markersReady, setMarkersReady] = useState(false)
+  const [liveMatches, setLiveMatches] = useState<LiveMatch[]>([])
+  const [loadingMatches, setLoadingMatches] = useState(false)
+  const [matchesError, setMatchesError] = useState(false)
+
+  const loadMatches = useCallback(async () => {
+    setLoadingMatches(true)
+    try {
+      const response = await fetch('/api/matches')
+      if (!response.ok) throw new Error(`HTTP ${response.status}`)
+      const data = (await response.json()) as MatchesResponse
+      setLiveMatches(data.matches)
+      setMatchesError(false)
+    } catch (error) {
+      console.error(error)
+      setMatchesError(true)
+    } finally {
+      setLoadingMatches(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    void loadMatches()
+    const timer = window.setInterval(() => void loadMatches(), REFRESH_MS)
+    return () => window.clearInterval(timer)
+  }, [loadMatches])
+
+  const stadiumViews = useMemo<StadiumView[]>(
+    () =>
+      stadiums.map((stadium) => {
+        const match = liveMatches.find((liveMatch) => liveMatch.homeTeamId === stadium.espnTeamId)
+        return {
+          ...stadium,
+          match: match ? toStadiumMatch(match, stadium) : (stadium.placeholder ?? noMatch)
+        }
+      }),
+    [liveMatches]
+  )
+
+  const liveCount = stadiumViews.filter((stadium) => stadium.match.status === 'live').length
 
   const visibleStadiums = useMemo(() => {
-    if (activeFilter === 'todos') return stadiums
-    if (activeFilter === 'en vivo') return stadiums.filter((stadium) => stadium.status === 'live')
-    if (activeFilter === 'próximos') return stadiums.filter((stadium) => stadium.status === 'upcoming')
-    return stadiums.filter((stadium) => stadium.status === 'finished')
-  }, [activeFilter])
+    if (activeFilter === 'todos') return stadiumViews
+    const status: StadiumStatus =
+      activeFilter === 'en vivo' ? 'live' : activeFilter === 'próximos' ? 'upcoming' : 'finished'
+    return stadiumViews.filter((stadium) => stadium.match.status === status)
+  }, [activeFilter, stadiumViews])
 
   useEffect(() => {
     if (!visibleStadiums.some((stadium) => stadium.id === selectedId)) {
@@ -247,7 +316,7 @@ function App() {
       stadiums.forEach((stadium) => {
         const markerElement = document.createElement('button')
         markerElement.type = 'button'
-        markerElement.className = `map-marker ${stadium.status}`
+        markerElement.className = 'map-marker idle'
         markerElement.setAttribute('aria-label', stadium.name)
         markerElement.title = `${stadium.club} · ${stadium.name}`
         markerElement.innerHTML = '<span class="marker-dot" />'
@@ -273,6 +342,8 @@ function App() {
 
         markerRefs.current.set(stadium.id, marker)
       })
+
+      setMarkersReady(true)
     })
 
     return () => {
@@ -283,20 +354,24 @@ function App() {
   }, [])
 
   useEffect(() => {
+    if (!markersReady) return
     const visibleIds = new Set(visibleStadiums.map((stadium) => stadium.id))
 
-    markerRefs.current.forEach((marker, stadiumId) => {
-      const markerElement = marker.getElement()
-      const isVisible = visibleIds.has(stadiumId)
-      const isSelected = stadiumId === selectedId
+    stadiumViews.forEach((stadium) => {
+      const markerElement = markerRefs.current.get(stadium.id)?.getElement()
+      if (!markerElement) return
 
-      markerElement.style.display = isVisible ? 'flex' : 'none'
-      markerElement.classList.toggle('selected', isSelected)
+      // classList, not className: MapLibre adds its own positioning classes to the element
+      markerElement.classList.remove('live', 'upcoming', 'finished', 'idle')
+      markerElement.classList.add(stadium.match.status)
+      markerElement.style.display = visibleIds.has(stadium.id) ? 'flex' : 'none'
+      markerElement.classList.toggle('selected', stadium.id === selectedId)
     })
-  }, [visibleStadiums, selectedId])
+  }, [markersReady, stadiumViews, visibleStadiums, selectedId])
 
   const selectedStadium =
-    visibleStadiums.find((stadium) => stadium.id === selectedId) ?? visibleStadiums[0] ?? stadiums[0]
+    visibleStadiums.find((stadium) => stadium.id === selectedId) ?? visibleStadiums[0] ?? stadiumViews[0]
+  const selectedMatch = selectedStadium.match
 
   return (
     <div className="app-shell">
@@ -312,10 +387,15 @@ function App() {
         <div className="toolbar">
           <div className="summary-pill">
             <span className="dot live" />
-            2 en vivo
+            {matchesError ? 'sin conexión' : `${liveCount} en vivo`}
           </div>
-          <button type="button" className="ghost-button">
-            actualizar
+          <button
+            type="button"
+            className="ghost-button"
+            disabled={loadingMatches}
+            onClick={() => void loadMatches()}
+          >
+            {loadingMatches ? 'actualizando…' : 'actualizar'}
           </button>
         </div>
       </div>
@@ -340,15 +420,15 @@ function App() {
           {detailOpen && (
             <div className="info-card">
               <div className="card-topline">
-                <span className={`status-tag ${selectedStadium.status}`}>
-                  {statusLabels[selectedStadium.status]}
+                <span className={`status-tag ${selectedMatch.status}`}>
+                  {statusLabels[selectedMatch.status]}
                 </span>
-                <span className="minute-chip">{selectedStadium.minute}</span>
+                <span className="minute-chip">{selectedMatch.minute}</span>
               </div>
 
               <div className="card-header">
                 <div>
-                  <p className="card-league">{selectedStadium.competition}</p>
+                  <p className="card-league">{selectedMatch.competition}</p>
                   <h2>{selectedStadium.name}</h2>
                 </div>
                 <button
@@ -366,17 +446,17 @@ function App() {
                   <span>Local</span>
                   <strong>{selectedStadium.club}</strong>
                 </div>
-                <strong className="score-value">{selectedStadium.score}</strong>
+                <strong className="score-value">{selectedMatch.score}</strong>
                 <div>
                   <span>Rival</span>
-                  <strong>FC rival</strong>
+                  <strong>{selectedMatch.rival}</strong>
                 </div>
               </div>
 
               <div className="info-grid">
                 <div>
                   <label>Horario</label>
-                  <strong>{selectedStadium.kickoff}</strong>
+                  <strong>{selectedMatch.kickoff}</strong>
                 </div>
                 <div>
                   <label>Barrio</label>
@@ -384,7 +464,7 @@ function App() {
                 </div>
               </div>
 
-              <p className="description">{selectedStadium.description}</p>
+              <p className="description">{selectedMatch.description}</p>
             </div>
           )}
 
