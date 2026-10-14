@@ -235,8 +235,8 @@ function toStadiumMatch(match: LiveMatch): StadiumMatch {
   }
 }
 
-// Right-hand chip: the minute while live, otherwise a word that doesn't repeat the status tag
-function chipLabel(match: StadiumMatch) {
+// Shown under the score: the running minute while live, otherwise a short word
+function clockLabel(match: StadiumMatch) {
   if (match.status === 'upcoming') return 'Hoy'
   if (match.status === 'finished') return 'Final'
   return match.minute
@@ -631,9 +631,14 @@ function App() {
                 <span className={`status-tag ${selectedMatch.status}`}>
                   {statusLabels[selectedMatch.status]}
                 </span>
-                {selectedMatch.status !== 'idle' && (
-                  <span className="minute-chip">{chipLabel(selectedMatch)}</span>
-                )}
+                <button
+                  type="button"
+                  className="close-button"
+                  aria-label="Cerrar detalle"
+                  onClick={() => setDetailOpen(false)}
+                >
+                  ×
+                </button>
               </div>
 
               <div className="card-header">
@@ -644,14 +649,6 @@ function App() {
                   <h2>{selectedStadium.name}</h2>
                   <p className="card-place">{selectedStadium.neighborhood}</p>
                 </div>
-                <button
-                  type="button"
-                  className="close-button"
-                  aria-label="Cerrar detalle"
-                  onClick={() => setDetailOpen(false)}
-                >
-                  ×
-                </button>
               </div>
 
               {selectedMatch.status === 'idle' ? (
@@ -663,7 +660,12 @@ function App() {
                       <span>Local</span>
                       <strong>{selectedMatch.home ?? selectedStadium.club}</strong>
                     </div>
-                    <strong className="score-value">{selectedMatch.score}</strong>
+                    <div className="score-center">
+                      <strong className="score-value">{selectedMatch.score}</strong>
+                      <span className={`score-clock ${selectedMatch.status}`}>
+                        {clockLabel(selectedMatch)}
+                      </span>
+                    </div>
                     <div>
                       <span>Rival</span>
                       <strong>{selectedMatch.rival}</strong>
