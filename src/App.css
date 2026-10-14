@@ -189,7 +189,6 @@
 }
 
 .map-marker {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -201,7 +200,7 @@
   padding: 0;
 }
 
-.map-marker.selected {
+.map-marker.selected .marker-dot {
   transform: scale(1.2);
 }
 
