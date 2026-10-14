@@ -426,28 +426,50 @@
 .score-box {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  gap: 10px;
+  grid-template-areas:
+    '. clock .'
+    'home score away';
   align-items: center;
-  padding: 14px 16px;
+  column-gap: 12px;
+  row-gap: 2px;
+  padding: 12px 16px 14px;
   border-radius: var(--radius);
   background: var(--surface-raised);
 }
 
-.score-box > div:last-child {
+.score-team {
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.score-team.home {
+  grid-area: home;
+}
+
+.score-team.away {
+  grid-area: away;
   text-align: right;
 }
 
-.score-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
+.score-box .score-value {
+  grid-area: score;
+  color: var(--text);
+  font-size: 1.8rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
 }
 
 /* The match clock: the most prominent thing after the score while live */
 .score-clock {
+  grid-area: clock;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   color: var(--text-muted);
   font-size: 0.66rem;
@@ -477,31 +499,6 @@
   50% {
     opacity: 0.25;
   }
-}
-
-.score-box span {
-  display: block;
-  margin-bottom: 2px;
-  color: var(--text-muted);
-  font-size: 0.64rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.score-box strong {
-  color: var(--text);
-  font-size: 0.88rem;
-  font-weight: 700;
-  line-height: 1.25;
-}
-
-.score-box .score-value {
-  font-size: 1.8rem;
-  line-height: 1.1;
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  font-variant-numeric: tabular-nums;
 }
 
 /* Scorers: home on the left, away on the right, one line per player */

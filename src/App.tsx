@@ -655,21 +655,16 @@ function App() {
                 <p className="description">{selectedMatch.description}</p>
               ) : (
                 <>
+                  {/* Home on the left, away on the right; the clock sits above the score */}
                   <div className="score-box">
-                    <div>
-                      <span>Local</span>
-                      <strong>{selectedMatch.home ?? selectedStadium.club}</strong>
-                    </div>
-                    <div className="score-center">
-                      <strong className="score-value">{selectedMatch.score}</strong>
-                      <span className={`score-clock ${selectedMatch.status}`}>
-                        {clockLabel(selectedMatch)}
-                      </span>
-                    </div>
-                    <div>
-                      <span>Rival</span>
-                      <strong>{selectedMatch.rival}</strong>
-                    </div>
+                    <span className={`score-clock ${selectedMatch.status}`}>
+                      {clockLabel(selectedMatch)}
+                    </span>
+                    <strong className="score-team home">
+                      {selectedMatch.home ?? selectedStadium.club}
+                    </strong>
+                    <strong className="score-value">{selectedMatch.score}</strong>
+                    <strong className="score-team away">{selectedMatch.rival}</strong>
                   </div>
 
                   {selectedMatch.status !== 'upcoming' &&
