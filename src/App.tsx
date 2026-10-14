@@ -429,14 +429,15 @@ function App() {
           : { top: 170, bottom: 70, left: 70, right: 430 }
       },
       maxPitch: 70,
-      // Collapsed into an (i) button so it doesn't compete with the legend
-      attributionControl: { compact: true }
+      attributionControl: false
     })
     // Tilt after framing so every stadium stays in view
     map.jumpTo({ pitch: 45, bearing: -12 })
 
     mapRef.current = map
 
+    // Collapsed into an (i) button next to the legend, clear of the detail card
+    map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-left')
     map.addControl(
       new maplibregl.NavigationControl({
         visualizePitch: true,
