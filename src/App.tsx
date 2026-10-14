@@ -189,6 +189,12 @@ function App() {
           <div className="district district-d" />
           <div className="district district-e" />
 
+          <div className="road road-1" />
+          <div className="road road-2" />
+          <div className="road road-3" />
+          <div className="road road-4" />
+          <div className="road road-5" />
+
           {stadiums.map((stadium) => {
             const markerClasses = ['stadium-marker', `is-${stadium.status}`]
             if (selectedStadium.id === stadium.id) {
