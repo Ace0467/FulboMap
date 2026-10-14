@@ -136,16 +136,16 @@ function App() {
 
   return (
     <div className="app-shell">
-      <header className="topbar">
+      <div className="topbar">
         <div className="brand-block">
           <div className="brand-mark">LPF</div>
-          <div>
-            <p className="eyebrow">Mapa de partidos</p>
+          <div className="brand-copy">
+            <span className="eyebrow">Mapa de partidos</span>
             <h1>FulboMap CABA</h1>
           </div>
         </div>
 
-        <div className="topbar-actions">
+        <div className="toolbar">
           <div className="summary-pill">
             <span className="dot live" />
             2 en vivo
@@ -154,128 +154,99 @@ function App() {
             actualizar
           </button>
         </div>
-      </header>
+      </div>
 
-      <main className="dashboard">
-        <aside className="sidebar">
-          <div className="panel-header">
-            <span>estadios</span>
-            <span>{visibleStadiums.length}</span>
-          </div>
+      <div className="filter-bar">
+        {filters.map((filter) => (
+          <button
+            key={filter.key}
+            type="button"
+            className={filter.key === activeFilter ? 'filter active' : 'filter'}
+            onClick={() => setActiveFilter(filter.key)}
+          >
+            {filter.label}
+          </button>
+        ))}
+      </div>
 
-          <div className="filter-row">
-            {filters.map((filter) => (
-              <button
-                key={filter.key}
-                type="button"
-                className={filter.key === activeFilter ? 'filter active' : 'filter'}
-                onClick={() => setActiveFilter(filter.key)}
-              >
-                {filter.label}
-              </button>
-            ))}
-          </div>
+      <main className="map-stage">
+        <div className="map-surface">
+          <div className="district district-a" />
+          <div className="district district-b" />
+          <div className="district district-c" />
+          <div className="district district-d" />
+          <div className="district district-e" />
 
-          <div className="stadium-list">
-            {visibleStadiums.map((stadium) => (
+          {stadiums.map((stadium) => {
+            const markerClasses = ['stadium-marker', `is-${stadium.status}`]
+            if (selectedStadium.id === stadium.id) {
+              markerClasses.push('selected')
+            }
+            return (
               <button
                 key={stadium.id}
                 type="button"
-                className={selectedStadium.id === stadium.id ? 'stadium-item selected' : 'stadium-item'}
+                className={markerClasses.join(' ')}
+                style={{ left: `${stadium.x}%`, top: `${stadium.y}%` }}
                 onClick={() => setSelectedId(stadium.id)}
+                aria-label={stadium.name}
+                title={`${stadium.club} · ${stadium.name}`}
               >
-                <div className="stadium-meta">
-                  <span className={`pulse pulse-${stadium.status}`} />
-                  <strong>{stadium.club}</strong>
-                </div>
-                <span>{stadium.name}</span>
-                <small>{stadium.score}</small>
+                <span className="marker-core" />
               </button>
-            ))}
-          </div>
-        </aside>
+            )
+          })}
 
-        <section className="map-panel">
-          <div className="map-surface">
-            <div className="district district-a" />
-            <div className="district district-b" />
-            <div className="district district-c" />
-            <div className="district district-d" />
-
-            {stadiums.map((stadium) => {
-              const markerClasses = ['stadium-marker', `is-${stadium.status}`]
-
-              if (selectedStadium.id === stadium.id) {
-                markerClasses.push('selected')
-              }
-
-              return (
-                <button
-                  key={stadium.id}
-                  type="button"
-                  className={markerClasses.join(' ')}
-                  style={{ left: `${stadium.x}%`, top: `${stadium.y}%` }}
-                  onClick={() => setSelectedId(stadium.id)}
-                  aria-label={stadium.name}
-                >
-                  <span className="marker-core" />
-                </button>
-              )
-            })}
-
-            <div className="map-legend">
-              <span><i className="legend-live" /> en vivo</span>
-              <span><i className="legend-upcoming" /> próximo</span>
-              <span><i className="legend-finished" /> finalizado</span>
+          <div className="info-card">
+            <div className="card-topline">
+              <span className={`status-tag ${selectedStadium.status}`}>
+                {statusLabels[selectedStadium.status]}
+              </span>
+              <span className="minute-chip">{selectedStadium.minute}</span>
             </div>
-          </div>
-        </section>
 
-        <aside className="detail-panel">
-          <div className="detail-header">
-            <span className={`status-tag ${selectedStadium.status}`}>
-              {statusLabels[selectedStadium.status]}
-            </span>
-            <span className="minute-chip">{selectedStadium.minute}</span>
-          </div>
-
-          <h2>{selectedStadium.name}</h2>
-          <p className="club-name">{selectedStadium.club}</p>
-          <p className="competition">{selectedStadium.competition}</p>
-
-          <div className="score-box">
-            <div>
-              <span>Local</span>
-              <strong>{selectedStadium.club}</strong>
+            <div className="card-header">
+              <div>
+                <p className="card-league">{selectedStadium.competition}</p>
+                <h2>{selectedStadium.name}</h2>
+              </div>
+              <button type="button" className="close-button" aria-label="Cerrar detalle">
+                ×
+              </button>
             </div>
-            <strong className="score-value">{selectedStadium.score}</strong>
-            <div>
-              <span>Rival</span>
-              <strong>FC rival</strong>
+
+            <div className="score-box">
+              <div>
+                <span>Local</span>
+                <strong>{selectedStadium.club}</strong>
+              </div>
+              <strong className="score-value">{selectedStadium.score}</strong>
+              <div>
+                <span>Rival</span>
+                <strong>FC rival</strong>
+              </div>
             </div>
+
+            <div className="info-grid">
+              <div>
+                <label>Horario</label>
+                <strong>{selectedStadium.kickoff}</strong>
+              </div>
+              <div>
+                <label>Barrio</label>
+                <strong>{selectedStadium.neighborhood}</strong>
+              </div>
+            </div>
+
+            <p className="description">{selectedStadium.description}</p>
           </div>
 
-          <div className="detail-grid">
-            <div>
-              <label>Estado</label>
-              <strong>{statusLabels[selectedStadium.status]}</strong>
-            </div>
-            <div>
-              <label>Horario</label>
-              <strong>{selectedStadium.kickoff}</strong>
-            </div>
-            <div>
-              <label>Barrio</label>
-              <strong>{selectedStadium.neighborhood}</strong>
-            </div>
-            <div>
-              <label>Competencia</label>
-              <strong>{selectedStadium.competition}</strong>
-            </div>
+          <div className="map-legend">
+            <span><i className="legend-live" /> en vivo</span>
+            <span><i className="legend-upcoming" /> próximo</span>
+            <span><i className="legend-finished" /> finalizado</span>
           </div>
-
-          <p className="description">{selectedStadium.description}</p>
-        </aside>
+        </div>
       </main>
     </div>
   )
