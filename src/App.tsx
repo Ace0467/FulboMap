@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
-import { CircleMarker, MapContainer, TileLayer } from 'react-leaflet'
-import 'leaflet/dist/leaflet.css'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import * as maplibregl from 'maplibre-gl'
+import mapLibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
+import 'maplibre-gl/dist/maplibre-gl.css'
 import './App.css'
 
 type StadiumStatus = 'live' | 'upcoming' | 'finished' | 'idle'
@@ -24,9 +25,9 @@ const stadiums: Stadium[] = [
   {
     id: 'bombonera',
     name: 'La Bombonera',
-    neighborhood: 'Villa Devoto',
+    neighborhood: 'La Boca',
     club: 'Boca Juniors',
-    position: [-34.6355, -58.3649],
+    position: [-58.3649, -34.6355],
     status: 'live',
     competition: 'Liga Profesional',
     kickoff: 'Hoy 20:30',
@@ -39,7 +40,7 @@ const stadiums: Stadium[] = [
     name: 'El Monumental',
     neighborhood: 'Belgrano',
     club: 'River Plate',
-    position: [-34.5453, -58.4496],
+    position: [-58.4496, -34.5453],
     status: 'upcoming',
     competition: 'Liga Profesional',
     kickoff: 'Hoy 21:00',
@@ -52,7 +53,7 @@ const stadiums: Stadium[] = [
     name: 'Estadio de San Lorenzo',
     neighborhood: 'Boedo',
     club: 'San Lorenzo',
-    position: [-34.6695, -58.4633],
+    position: [-58.4633, -34.6695],
     status: 'finished',
     competition: 'Primera Nacional',
     kickoff: 'Hoy 18:00',
@@ -65,7 +66,7 @@ const stadiums: Stadium[] = [
     name: 'Amalfitani',
     neighborhood: 'Villa Luro',
     club: 'Vélez Sarsfield',
-    position: [-34.6357, -58.5189],
+    position: [-58.5189, -34.6357],
     status: 'idle',
     competition: 'Liga Profesional',
     kickoff: 'Sin partido',
@@ -78,7 +79,7 @@ const stadiums: Stadium[] = [
     name: 'Estadio Ducó',
     neighborhood: 'Caballito',
     club: 'Huracán',
-    position: [-34.641, -58.4671],
+    position: [-58.4671, -34.641],
     status: 'upcoming',
     competition: 'Regional Amateur',
     kickoff: 'Hoy 19:00',
@@ -91,7 +92,7 @@ const stadiums: Stadium[] = [
     name: 'Estadio Diego Armando Maradona',
     neighborhood: 'Villa Crespo',
     club: 'Argentinos Juniors',
-    position: [-34.603, -58.434],
+    position: [-58.434, -34.603],
     status: 'live',
     competition: 'Primera División',
     kickoff: 'Hoy 20:00',
@@ -115,14 +116,10 @@ const statusLabels: Record<StadiumStatus, string> = {
   idle: 'sin partido'
 }
 
-const markerColors: Record<StadiumStatus, string> = {
-  live: '#58f0b5',
-  upcoming: '#7cc7ff',
-  finished: '#95a9bd',
-  idle: '#3f6d94'
-}
-
 function App() {
+  const mapContainerRef = useRef<HTMLDivElement | null>(null)
+  const mapRef = useRef<maplibregl.Map | null>(null)
+  const markerRefs = useRef<Map<string, maplibregl.Marker>>(new Map())
   const [activeFilter, setActiveFilter] = useState<Filter>('todos')
   const [selectedId, setSelectedId] = useState('bombonera')
   const [detailOpen, setDetailOpen] = useState(true)
@@ -141,6 +138,119 @@ function App() {
       setDetailOpen(true)
     }
   }, [selectedId, visibleStadiums])
+
+  useEffect(() => {
+    if (!mapContainerRef.current || mapRef.current) return
+
+    maplibregl.setWorkerUrl(mapLibreWorkerUrl)
+
+    const map = new maplibregl.Map({
+      container: mapContainerRef.current,
+      style: 'https://tiles.openfreemap.org/styles/liberty',
+      center: stadiums[0].position,
+      zoom: 14.4,
+      pitch: 56,
+      bearing: -18,
+      maxPitch: 70
+    })
+
+    mapRef.current = map
+
+    map.addControl(
+      new maplibregl.NavigationControl({
+        visualizePitch: true,
+        showZoom: true,
+        showCompass: true
+      }),
+      'top-right'
+    )
+
+    map.on('style.load', () => {
+      if (!map.getSource('osm-base')) {
+        map.addSource('osm-base', {
+          type: 'raster',
+          tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+          tileSize: 256,
+          attribution: '© OpenStreetMap contributors'
+        })
+        map.addLayer(
+          {
+            id: 'osm-base-layer',
+            type: 'raster',
+            source: 'osm-base',
+            paint: { 'raster-opacity': 1 }
+          },
+          'park'
+        )
+      }
+
+      if (map.getLayer('building-3d')) {
+        map.setLayerZoomRange('building-3d', 12, 24)
+        map.setPaintProperty('building-3d', 'fill-extrusion-color', '#67b6e8')
+        map.setPaintProperty('building-3d', 'fill-extrusion-opacity', 0.96)
+        map.setPaintProperty('building-3d', 'fill-extrusion-vertical-gradient', true)
+        map.setPaintProperty('building-3d', 'fill-extrusion-base', [
+          'coalesce',
+          ['get', 'render_min_height'],
+          0
+        ])
+        map.setPaintProperty('building-3d', 'fill-extrusion-height', [
+          '*',
+          ['coalesce', ['get', 'render_height'], 5],
+          2.4
+        ])
+      }
+
+      stadiums.forEach((stadium) => {
+        const markerElement = document.createElement('button')
+        markerElement.type = 'button'
+        markerElement.className = `map-marker ${stadium.status}`
+        markerElement.setAttribute('aria-label', stadium.name)
+        markerElement.title = `${stadium.club} · ${stadium.name}`
+        markerElement.innerHTML = '<span class="marker-dot" />'
+        markerElement.addEventListener('click', () => {
+          setSelectedId(stadium.id)
+          setDetailOpen(true)
+          map.flyTo({
+            center: stadium.position,
+            zoom: 15.2,
+            pitch: 65,
+            bearing: -18,
+            speed: 0.8,
+            curve: 1.35
+          })
+        })
+
+        const marker = new maplibregl.Marker({
+          element: markerElement,
+          anchor: 'center'
+        })
+          .setLngLat(stadium.position)
+          .addTo(map)
+
+        markerRefs.current.set(stadium.id, marker)
+      })
+    })
+
+    return () => {
+      map.remove()
+      mapRef.current = null
+      markerRefs.current.clear()
+    }
+  }, [])
+
+  useEffect(() => {
+    const visibleIds = new Set(visibleStadiums.map((stadium) => stadium.id))
+
+    markerRefs.current.forEach((marker, stadiumId) => {
+      const markerElement = marker.getElement()
+      const isVisible = visibleIds.has(stadiumId)
+      const isSelected = stadiumId === selectedId
+
+      markerElement.style.display = isVisible ? 'flex' : 'none'
+      markerElement.classList.toggle('selected', isSelected)
+    })
+  }, [visibleStadiums, selectedId])
 
   const selectedStadium =
     visibleStadiums.find((stadium) => stadium.id === selectedId) ?? visibleStadiums[0] ?? stadiums[0]
@@ -182,50 +292,7 @@ function App() {
 
       <main className="map-stage">
         <div className="map-surface">
-          <div className="map-plate">
-            <MapContainer
-              center={[-34.615, -58.43]}
-              zoom={11}
-              minZoom={10}
-              maxZoom={15}
-              scrollWheelZoom
-              zoomControl
-              attributionControl={false}
-              className="leaflet-map"
-            >
-              <TileLayer
-                attribution='&copy; OpenStreetMap contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-
-              {stadiums.map((stadium) => {
-              const isVisible = visibleStadiums.some((item) => item.id === stadium.id)
-              if (!isVisible) return null
-
-              const isSelected = stadium.id === selectedStadium.id
-
-              return (
-                <CircleMarker
-                  key={stadium.id}
-                  center={stadium.position}
-                  radius={isSelected ? 10 : 7}
-                  pathOptions={{
-                    color: markerColors[stadium.status],
-                    fillColor: markerColors[stadium.status],
-                    fillOpacity: 1,
-                    weight: isSelected ? 3 : 2
-                  }}
-                  eventHandlers={{
-                    click: () => {
-                      setSelectedId(stadium.id)
-                      setDetailOpen(true)
-                    }
-                  }}
-                />
-              )
-            })}
-            </MapContainer>
-          </div>
+          <div ref={mapContainerRef} className="map-canvas" />
 
           {detailOpen && (
             <div className="info-card">

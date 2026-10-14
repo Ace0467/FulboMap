@@ -150,76 +150,87 @@
   width: 100%;
   min-height: 100vh;
   overflow: hidden;
-  background: linear-gradient(180deg, #071c2f 0%, #0a1f38 100%);
+  background: linear-gradient(180deg, #061d2e 0%, #0a2038 100%);
 }
 
-.map-surface::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 50% 65%, rgba(71, 200, 255, 0.16), transparent 35%);
-  pointer-events: none;
-}
-
-.map-plate {
-  position: absolute;
-  inset: 8% 4% 8% 4%;
-  border-radius: 22px;
-  box-shadow: 0 40px 80px rgba(2, 9, 17, 0.42), inset 0 0 0 1px rgba(146, 207, 255, 0.18);
-  overflow: hidden;
-  transform: perspective(1900px) rotateX(56deg) rotateZ(-10deg) scale(1.16);
-  transform-origin: center center;
-  background: rgba(15, 34, 52, 0.3);
-}
-
-.map-plate::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 25%);
-  pointer-events: none;
-  z-index: 20;
-}
-
-.map-plate::after {
-  content: '';
-  position: absolute;
-  inset: auto 8% -6% 8%;
-  height: 22%;
-  background: linear-gradient(180deg, rgba(5, 15, 24, 0.26), rgba(5, 15, 24, 0.62));
-  border-radius: 50%;
-  transform: skewX(-14deg);
-  filter: blur(24px);
-  pointer-events: none;
-}
-
-.leaflet-map {
+.map-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   z-index: 0;
-  filter: saturate(0.96) contrast(1.12) brightness(0.92);
 }
 
-.leaflet-container {
-  background: #0b2139;
-  border-radius: 22px;
+.maplibregl-map {
+  width: 100%;
+  height: 100%;
+  background: #0f243a;
 }
 
-.leaflet-control-zoom {
-  display: none;
+.maplibregl-ctrl-top-right {
+  top: 14px;
+  right: 14px;
 }
 
-.leaflet-tile-pane {
-  filter: saturate(0.8) brightness(0.9) contrast(1.1);
+.maplibregl-ctrl-group {
+  border-radius: 14px !important;
+  overflow: hidden;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
 }
 
-.leaflet-pane,
-.leaflet-tile,
-.leaflet-marker-pane,
-.leaflet-popup-pane {
-  transform: translateZ(0);
+.maplibregl-ctrl {
+  border: 1px solid rgba(155, 216, 255, 0.18) !important;
+  background: rgba(9, 23, 37, 0.7) !important;
+}
+
+.maplibregl-ctrl button {
+  background: rgba(9, 23, 37, 0.7) !important;
+  color: #edf9ff !important;
+}
+
+.map-marker {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.map-marker.selected {
+  transform: scale(1.2);
+}
+
+.marker-dot {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.04);
+}
+
+.map-marker.live .marker-dot {
+  background: #58f0b5;
+  box-shadow: 0 0 0 7px rgba(88, 240, 181, 0.12), 0 0 18px rgba(88, 240, 181, 0.7);
+}
+
+.map-marker.upcoming .marker-dot {
+  background: #7cc7ff;
+  box-shadow: 0 0 0 7px rgba(124, 199, 255, 0.12), 0 0 18px rgba(124, 199, 255, 0.7);
+}
+
+.map-marker.finished .marker-dot {
+  background: #95a9bd;
+  box-shadow: 0 0 0 7px rgba(149, 169, 189, 0.12);
+}
+
+.map-marker.idle .marker-dot {
+  background: #3f6d94;
+  box-shadow: 0 0 0 7px rgba(63, 109, 148, 0.12);
 }
 
 .info-card {
