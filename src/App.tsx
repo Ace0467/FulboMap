@@ -106,8 +106,8 @@ const stadiums: Stadium[] = [
     club: 'Argentinos Juniors',
     position: [-58.4726194, -34.6061215],
     espnVenueId: '10785',
-    // Red with a white sash and a blue line through it
-    kit: 'linear-gradient(45deg, #e30613 0 35%, #ffffff 35% 45%, #1d4fa0 45% 55%, #ffffff 55% 65%, #e30613 65%)'
+    // Red with a white sash, inside a blue inner outline
+    kit: 'radial-gradient(circle closest-side, transparent 82%, #1d4fa0 85%), linear-gradient(45deg, #e30613 0 38%, #ffffff 38% 62%, #e30613 62%)'
   },
   {
     id: 'laza',
