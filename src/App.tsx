@@ -187,8 +187,8 @@ function App() {
             zoom={11}
             minZoom={10}
             maxZoom={15}
-            scrollWheelZoom={false}
-            zoomControl={false}
+            scrollWheelZoom
+            zoomControl
             attributionControl={false}
             className="leaflet-map"
           >
