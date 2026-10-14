@@ -547,10 +547,9 @@ function App() {
       <header className="hud">
         <div className="hud-main">
           <div className="brand-block">
-            <div className="brand-mark">LPF</div>
             <div className="brand-copy">
               <span className="eyebrow">Mapa de partidos</span>
-              <h1>FulboMap CABA</h1>
+              <h1>FulboMap</h1>
             </div>
           </div>
 
