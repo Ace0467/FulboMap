@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
+import { CircleMarker, MapContainer, TileLayer } from 'react-leaflet'
+import 'leaflet/dist/leaflet.css'
 import './App.css'
 
 type StadiumStatus = 'live' | 'upcoming' | 'finished' | 'idle'
@@ -9,8 +11,7 @@ type Stadium = {
   name: string
   neighborhood: string
   club: string
-  x: number
-  y: number
+  position: [number, number]
   status: StadiumStatus
   competition: string
   kickoff: string
@@ -25,8 +26,7 @@ const stadiums: Stadium[] = [
     name: 'La Bombonera',
     neighborhood: 'Villa Devoto',
     club: 'Boca Juniors',
-    x: 48,
-    y: 60,
+    position: [-34.6355, -58.3649],
     status: 'live',
     competition: 'Liga Profesional',
     kickoff: 'Hoy 20:30',
@@ -39,8 +39,7 @@ const stadiums: Stadium[] = [
     name: 'El Monumental',
     neighborhood: 'Belgrano',
     club: 'River Plate',
-    x: 69,
-    y: 31,
+    position: [-34.5453, -58.4496],
     status: 'upcoming',
     competition: 'Liga Profesional',
     kickoff: 'Hoy 21:00',
@@ -53,8 +52,7 @@ const stadiums: Stadium[] = [
     name: 'Estadio de San Lorenzo',
     neighborhood: 'Boedo',
     club: 'San Lorenzo',
-    x: 58,
-    y: 71,
+    position: [-34.6695, -58.4633],
     status: 'finished',
     competition: 'Primera Nacional',
     kickoff: 'Hoy 18:00',
@@ -67,8 +65,7 @@ const stadiums: Stadium[] = [
     name: 'Amalfitani',
     neighborhood: 'Villa Luro',
     club: 'Vélez Sarsfield',
-    x: 39,
-    y: 45,
+    position: [-34.6357, -58.5189],
     status: 'idle',
     competition: 'Liga Profesional',
     kickoff: 'Sin partido',
@@ -81,8 +78,7 @@ const stadiums: Stadium[] = [
     name: 'Estadio Ducó',
     neighborhood: 'Caballito',
     club: 'Huracán',
-    x: 53,
-    y: 49,
+    position: [-34.641, -58.4671],
     status: 'upcoming',
     competition: 'Regional Amateur',
     kickoff: 'Hoy 19:00',
@@ -95,8 +91,7 @@ const stadiums: Stadium[] = [
     name: 'Estadio Diego Armando Maradona',
     neighborhood: 'Villa Crespo',
     club: 'Argentinos Juniors',
-    x: 43,
-    y: 38,
+    position: [-34.603, -58.434],
     status: 'live',
     competition: 'Primera División',
     kickoff: 'Hoy 20:00',
@@ -120,10 +115,16 @@ const statusLabels: Record<StadiumStatus, string> = {
   idle: 'sin partido'
 }
 
+const markerColors: Record<StadiumStatus, string> = {
+  live: '#58f0b5',
+  upcoming: '#7cc7ff',
+  finished: '#95a9bd',
+  idle: '#3f6d94'
+}
+
 function App() {
   const [activeFilter, setActiveFilter] = useState<Filter>('todos')
   const [selectedId, setSelectedId] = useState('bombonera')
-  const [hoveredId, setHoveredId] = useState<string | null>(null)
   const [detailOpen, setDetailOpen] = useState(true)
 
   const visibleStadiums = useMemo(() => {
@@ -143,8 +144,6 @@ function App() {
 
   const selectedStadium =
     visibleStadiums.find((stadium) => stadium.id === selectedId) ?? visibleStadiums[0] ?? stadiums[0]
-
-  const previewStadium = hoveredId ? stadiums.find((stadium) => stadium.id === hoveredId) ?? null : null
 
   return (
     <div className="app-shell">
@@ -183,52 +182,48 @@ function App() {
 
       <main className="map-stage">
         <div className="map-surface">
-          <div className="district district-a" />
-          <div className="district district-b" />
-          <div className="district district-c" />
-          <div className="district district-d" />
-          <div className="district district-e" />
+          <MapContainer
+            center={[-34.615, -58.43]}
+            zoom={11}
+            minZoom={10}
+            maxZoom={15}
+            scrollWheelZoom={false}
+            zoomControl={false}
+            attributionControl={false}
+            className="leaflet-map"
+          >
+            <TileLayer
+              attribution='&copy; OpenStreetMap contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
 
-          <div className="road road-1" />
-          <div className="road road-2" />
-          <div className="road road-3" />
-          <div className="road road-4" />
-          <div className="road road-5" />
+            {stadiums.map((stadium) => {
+              const isVisible = visibleStadiums.some((item) => item.id === stadium.id)
+              if (!isVisible) return null
 
-          {stadiums.map((stadium) => {
-            const markerClasses = ['stadium-marker', `is-${stadium.status}`]
-            if (selectedStadium.id === stadium.id) {
-              markerClasses.push('selected')
-            }
-            return (
-              <button
-                key={stadium.id}
-                type="button"
-                className={markerClasses.join(' ')}
-                style={{ left: `${stadium.x}%`, top: `${stadium.y}%` }}
-                onClick={() => {
-                  setSelectedId(stadium.id)
-                  setDetailOpen(true)
-                }}
-                onMouseEnter={() => setHoveredId(stadium.id)}
-                onMouseLeave={() => setHoveredId((current) => (current === stadium.id ? null : current))}
-                aria-label={stadium.name}
-                title={`${stadium.club} · ${stadium.name}`}
-              >
-                <span className="marker-core" />
-              </button>
-            )
-          })}
+              const isSelected = stadium.id === selectedStadium.id
 
-          {previewStadium && (
-            <div
-              className="map-preview"
-              style={{ left: `${previewStadium.x}%`, top: `${previewStadium.y}%` }}
-            >
-              <strong>{previewStadium.club}</strong>
-              <span>{previewStadium.name}</span>
-            </div>
-          )}
+              return (
+                <CircleMarker
+                  key={stadium.id}
+                  center={stadium.position}
+                  radius={isSelected ? 10 : 7}
+                  pathOptions={{
+                    color: markerColors[stadium.status],
+                    fillColor: markerColors[stadium.status],
+                    fillOpacity: 1,
+                    weight: isSelected ? 3 : 2
+                  }}
+                  eventHandlers={{
+                    click: () => {
+                      setSelectedId(stadium.id)
+                      setDetailOpen(true)
+                    }
+                  }}
+                />
+              )
+            })}
+          </MapContainer>
 
           {detailOpen && (
             <div className="info-card">

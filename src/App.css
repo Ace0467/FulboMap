@@ -150,205 +150,28 @@
   width: 100%;
   min-height: 100vh;
   overflow: hidden;
-  background:
-    linear-gradient(180deg, rgba(7, 15, 26, 0.25), rgba(6, 16, 27, 0.5)),
-    radial-gradient(circle at 20% 20%, rgba(86, 217, 255, 0.12), transparent 28%),
-    linear-gradient(135deg, #071a2d 0%, #0d223c 100%);
+  background: #0b2139;
 }
 
-.map-surface::before {
-  content: '';
+.leaflet-map {
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(rgba(151, 216, 255, 0.04), rgba(151, 216, 255, 0.04)),
-    repeating-linear-gradient(
-      90deg,
-      rgba(142, 216, 255, 0.05),
-      rgba(142, 216, 255, 0.05) 1px,
-      transparent 1px,
-      transparent 28px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(142, 216, 255, 0.04),
-      rgba(142, 216, 255, 0.04) 1px,
-      transparent 1px,
-      transparent 24px
-    );
+  width: 100%;
+  height: 100%;
+  z-index: 0;
 }
 
-.map-surface::after {
-  content: '';
-  position: absolute;
-  inset: 8% 6% 6% 6%;
-  border-radius: 44% 56% 42% 58% / 52% 40% 60% 48%;
-  border: 1px solid rgba(132, 203, 255, 0.18);
-  background: linear-gradient(135deg, rgba(100, 214, 255, 0.06), rgba(13, 43, 74, 0.12));
-  transform: rotate(-8deg);
-  box-shadow: inset 0 0 40px rgba(76, 191, 255, 0.06);
+.leaflet-container {
+  background: #0b2139;
+  filter: saturate(1.05) contrast(1.08) brightness(0.95);
 }
 
-.district {
-  position: absolute;
-  border: 1px solid rgba(134, 202, 255, 0.12);
-  background: rgba(10, 31, 51, 0.18);
-  backdrop-filter: blur(1px);
+.leaflet-control-zoom {
+  display: none;
 }
 
-.road {
-  position: absolute;
-  z-index: 5;
-  background: linear-gradient(90deg, rgba(141, 205, 255, 0.18), rgba(86, 165, 255, 0.05), rgba(141, 205, 255, 0.18));
-  border: 1px solid rgba(140, 210, 255, 0.14);
-  box-shadow: inset 0 0 18px rgba(132, 204, 255, 0.1);
-}
-
-.road-1 {
-  left: 4%;
-  top: 27%;
-  width: 78%;
-  height: 14px;
-  border-radius: 999px;
-  transform: rotate(-15deg);
-}
-
-.road-2 {
-  left: 16%;
-  top: 52%;
-  width: 70%;
-  height: 12px;
-  border-radius: 999px;
-  transform: rotate(12deg);
-}
-
-.road-3 {
-  left: 32%;
-  top: 16%;
-  width: 14px;
-  height: 66%;
-  border-radius: 999px;
-  transform: rotate(-4deg);
-}
-
-.road-4 {
-  left: 51%;
-  top: 14%;
-  width: 14px;
-  height: 70%;
-  border-radius: 999px;
-  transform: rotate(7deg);
-}
-
-.road-5 {
-  left: 20%;
-  top: 72%;
-  width: 62%;
-  height: 14px;
-  border-radius: 999px;
-  transform: rotate(-10deg);
-}
-
-.district-a {
-  inset: 14% 12% 48% 8%;
-  border-radius: 50% 40% 44% 56% / 42% 50% 50% 58%;
-  transform: rotate(-18deg);
-}
-
-.district-b {
-  inset: 36% 8% 20% 42%;
-  border-radius: 48% 52% 55% 45% / 38% 52% 48% 62%;
-  transform: rotate(12deg);
-}
-
-.district-c {
-  inset: 54% 35% 11% 8%;
-  border-radius: 44% 56% 52% 48% / 52% 40% 60% 48%;
-  transform: rotate(-10deg);
-}
-
-.district-d {
-  inset: 52% 10% 14% 50%;
-  border-radius: 42% 58% 40% 60% / 44% 52% 48% 56%;
-  transform: rotate(14deg);
-}
-
-.district-e {
-  inset: 16% 52% 54% 26%;
-  border-radius: 58% 42% 52% 48% / 40% 48% 52% 60%;
-  transform: rotate(18deg);
-}
-
-.stadium-marker {
-  position: absolute;
-  z-index: 20;
-  width: 22px;
-  height: 22px;
-  margin-left: -11px;
-  margin-top: -11px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  transform: translate(-50%, -50%);
-  transition: transform 0.2s ease;
-}
-
-.stadium-marker.selected {
-  transform: translate(-50%, -50%) scale(1.25);
-}
-
-.map-preview {
-  position: absolute;
-  z-index: 25;
-  transform: translate(-50%, calc(-100% - 18px));
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 150px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: rgba(7, 18, 31, 0.8);
-  border: 1px solid rgba(138, 203, 255, 0.22);
-  box-shadow: 0 18px 28px rgba(0, 0, 0, 0.18);
-  pointer-events: none;
-}
-
-.map-preview strong {
-  color: #f5fbff;
-  font-size: 0.82rem;
-}
-
-.map-preview span {
-  color: #bedcff;
-  font-size: 0.72rem;
-}
-
-.marker-core {
-  display: block;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.04);
-}
-
-.is-live .marker-core {
-  background: #58f0b5;
-  box-shadow: 0 0 0 7px rgba(88, 240, 181, 0.12), 0 0 22px rgba(88, 240, 181, 0.8);
-}
-
-.is-upcoming .marker-core {
-  background: #7cc7ff;
-  box-shadow: 0 0 0 7px rgba(124, 199, 255, 0.12), 0 0 20px rgba(124, 199, 255, 0.8);
-}
-
-.is-finished .marker-core {
-  background: #95a9bd;
-  box-shadow: 0 0 0 7px rgba(149, 169, 189, 0.12);
-}
-
-.is-idle .marker-core {
-  background: #3f6d94;
-  box-shadow: 0 0 0 7px rgba(63, 109, 148, 0.1);
+.leaflet-tile-pane {
+  filter: saturate(0.8) brightness(0.8) contrast(1.2);
 }
 
 .info-card {
