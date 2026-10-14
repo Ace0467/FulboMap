@@ -250,6 +250,35 @@ function App() {
         ])
       }
 
+      if (!map.getSource('brand-tint')) {
+        map.addSource('brand-tint', {
+          type: 'geojson',
+          data: {
+            type: 'Feature',
+            properties: {},
+            geometry: {
+              type: 'Polygon',
+              coordinates: [[
+                [-179.999, -85],
+                [179.999, -85],
+                [179.999, 85],
+                [-179.999, 85],
+                [-179.999, -85]
+              ]]
+            }
+          }
+        })
+        map.addLayer({
+          id: 'brand-tint-layer',
+          type: 'fill',
+          source: 'brand-tint',
+          paint: {
+            'fill-color': '#378fca',
+            'fill-opacity': 0.18
+          }
+        }, 'building-3d')
+      }
+
       if (!map.getSource('stadium-models')) {
         map.addSource('stadium-models', { type: 'geojson', data: stadiumModels })
         map.addLayer({
