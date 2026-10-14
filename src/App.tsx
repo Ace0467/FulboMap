@@ -96,7 +96,8 @@ const stadiums: Stadium[] = [
     club: 'Huracán',
     position: [-58.3965055, -34.6434694],
     espnVenueId: '10783',
-    kit: 'radial-gradient(circle, #d91a21 0 32%, #ffffff 33%)'
+    // Red H on white
+    kit: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23d91a21' d='M5 4h3v4.5h4V4h3v12h-3v-4.5H8V16H5z'/%3E%3C/svg%3E\") center / 78% no-repeat, #ffffff"
   },
   {
     id: 'maradona',
@@ -114,7 +115,7 @@ const stadiums: Stadium[] = [
     club: 'Deportivo Riestra',
     position: [-58.4435109, -34.6533436],
     espnVenueId: '10787',
-    kit: 'linear-gradient(180deg, #111111 0 34%, #ffffff 34% 66%, #111111 66%)'
+    kit: 'linear-gradient(180deg, #ffffff 0 34%, #111111 34% 66%, #ffffff 66%)'
   },
   {
     id: 'chiqui-tapia',
@@ -159,7 +160,8 @@ const stadiums: Stadium[] = [
     club: 'Ferro Carril Oeste',
     position: [-58.4478378, -34.6187654],
     espnVenueId: '10981',
-    kit: '#1a8a3a'
+    // Green chevron on white, as on the crest
+    kit: 'conic-gradient(from 130deg at 50% 26%, #1a8a3a 0 100deg, #ffffff 100deg)'
   },
   {
     id: 'mataderos',
