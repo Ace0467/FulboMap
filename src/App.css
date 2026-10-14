@@ -5,22 +5,30 @@
   background: linear-gradient(180deg, #061b34 0%, #0b2948 100%);
 }
 
-.topbar {
+.hud {
   position: absolute;
   top: 18px;
   left: 18px;
   right: 18px;
   z-index: 30;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
   pointer-events: none;
 }
 
+.hud-main {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+}
+
 .brand-block,
 .toolbar,
-.filter-bar {
+.filter {
   pointer-events: auto;
 }
 
@@ -61,7 +69,7 @@
   text-transform: uppercase;
 }
 
-.topbar h1 {
+.hud h1 {
   margin: 2px 0 0;
   color: #f5fbff;
   font-size: clamp(1.3rem, 2vw, 2rem);
@@ -78,7 +86,6 @@
 .filter,
 .status-tag,
 .minute-chip,
-.info-card,
 .map-legend {
   border-radius: 999px;
 }
@@ -115,11 +122,12 @@
   font-weight: 600;
 }
 
+.ghost-button:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+
 .filter-bar {
-  position: absolute;
-  top: 96px;
-  left: 18px;
-  z-index: 35;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -136,8 +144,10 @@
 }
 
 .filter.active {
-  background: linear-gradient(135deg, rgba(86, 217, 255, 0.24), rgba(29, 121, 214, 0.34));
-  border-color: rgba(110, 214, 255, 0.6);
+  background: linear-gradient(135deg, #2aa8f0, #1d6fc4);
+  border-color: rgba(160, 225, 255, 0.8);
+  color: #ffffff;
+  font-weight: 700;
 }
 
 .map-stage {
@@ -167,9 +177,10 @@
   background: #0f243a;
 }
 
+/* Below the toolbar, so the zoom/compass buttons don't cover "actualizar" */
 .maplibregl-ctrl-top-right {
-  top: 14px;
-  right: 14px;
+  top: 72px;
+  right: 8px;
 }
 
 .maplibregl-ctrl-group {
@@ -188,48 +199,100 @@
   color: #edf9ff !important;
 }
 
+/* MapLibre's icons are dark; flip them for the dark control background */
+.maplibregl-ctrl button .maplibregl-ctrl-icon {
+  filter: invert(1);
+}
+
 .map-marker {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
+  gap: 6px;
   border: none;
   background: transparent;
   cursor: pointer;
   padding: 0;
 }
 
+.marker-pin {
+  padding: 4px 9px;
+  border-radius: 9px;
+  background: rgba(9, 23, 37, 0.9);
+  border: 1px solid rgba(138, 203, 255, 0.28);
+  color: #f5fbff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  box-shadow: 0 8px 18px rgba(3, 12, 24, 0.28);
+}
+
+.marker-pin[hidden] {
+  display: none;
+}
+
+.map-marker.live .marker-pin {
+  border-color: rgba(88, 240, 181, 0.75);
+}
+
+.map-marker.finished .marker-pin {
+  color: #c9d6e4;
+}
+
+.marker-dot {
+  position: relative;
+  display: block;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 3px solid #ffffff;
+  box-shadow: 0 4px 12px rgba(3, 12, 24, 0.35);
+  transition: transform 0.15s ease;
+}
+
+.map-marker:hover .marker-dot,
 .map-marker.selected .marker-dot {
   transform: scale(1.2);
 }
 
-.marker-dot {
-  display: block;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.04);
+.map-marker.live .marker-dot {
+  background: #22d68f;
 }
 
-.map-marker.live .marker-dot {
-  background: #58f0b5;
-  box-shadow: 0 0 0 7px rgba(88, 240, 181, 0.12), 0 0 18px rgba(88, 240, 181, 0.7);
+.map-marker.live .marker-dot::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 3px solid #22d68f;
+  animation: livePulse 1.6s ease-out infinite;
+}
+
+@keyframes livePulse {
+  from {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  to {
+    transform: scale(2.2);
+    opacity: 0;
+  }
 }
 
 .map-marker.upcoming .marker-dot {
-  background: #7cc7ff;
-  box-shadow: 0 0 0 7px rgba(124, 199, 255, 0.12), 0 0 18px rgba(124, 199, 255, 0.7);
+  background: #1f8fe0;
 }
 
 .map-marker.finished .marker-dot {
-  background: #95a9bd;
-  box-shadow: 0 0 0 7px rgba(149, 169, 189, 0.12);
+  background: #8394a8;
 }
 
 .map-marker.idle .marker-dot {
-  background: #3f6d94;
-  box-shadow: 0 0 0 7px rgba(63, 109, 148, 0.12);
+  width: 16px;
+  height: 16px;
+  background: #0d4f86;
+  border-width: 2px;
 }
 
 .info-card {
@@ -239,6 +302,7 @@
   z-index: 40;
   width: min(360px, calc(100vw - 32px));
   padding: 18px 18px 14px;
+  border-radius: 22px;
   background: rgba(9, 23, 37, 0.82);
   border: 1px solid rgba(138, 203, 255, 0.18);
   box-shadow: 0 24px 44px rgba(0, 0, 0, 0.28);
@@ -423,7 +487,8 @@
 
 .legend-live,
 .legend-upcoming,
-.legend-finished {
+.legend-finished,
+.legend-idle {
   width: 10px;
   height: 10px;
   border-radius: 50%;
@@ -431,35 +496,55 @@
 }
 
 .legend-live {
-  background: #58f0b5;
+  background: #22d68f;
 }
 
 .legend-upcoming {
-  background: #7cc7ff;
+  background: #1f8fe0;
 }
 
 .legend-finished {
-  background: #95a9bd;
+  background: #8394a8;
+}
+
+.legend-idle {
+  background: #0d4f86;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.7);
 }
 
 @media (max-width: 780px) {
-  .topbar {
+  .hud {
     top: 12px;
     left: 12px;
     right: 12px;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .hud-main {
+    align-items: stretch;
   }
 
   .toolbar {
-    width: 100%;
     justify-content: space-between;
   }
 
+  /* One scrollable row instead of wrapping over the map */
   .filter-bar {
-    top: 122px;
-    left: 12px;
-    right: 12px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    pointer-events: auto;
+  }
+
+  .filter {
+    flex: none;
+  }
+
+  /* Pinch and two-finger drag replace the zoom/compass buttons on touch screens */
+  .maplibregl-ctrl-top-right {
+    display: none;
   }
 
   .info-card {
@@ -467,16 +552,29 @@
     right: 12px;
     bottom: 12px;
     width: auto;
+    max-height: 58vh;
+    overflow-y: auto;
+  }
+
+  .info-card ~ .map-legend {
+    display: none;
+  }
+
+  .map-legend {
+    left: 12px;
+    bottom: 12px;
   }
 }
 
 @media (max-width: 520px) {
-  .brand-block {
-    width: 100%;
+  .brand-mark {
+    width: 40px;
+    height: 40px;
+    font-size: 0.95rem;
   }
 
-  .brand-copy h1 {
-    font-size: 1.15rem;
+  .brand-block {
+    padding: 8px 12px;
   }
 
   .summary-pill,
@@ -489,12 +587,12 @@
     gap: 6px;
   }
 
-  .score-box {
-    grid-template-columns: 1fr;
-    text-align: center;
+  .info-card h2 {
+    font-size: 1.3rem;
   }
 
-  .info-grid {
-    flex-direction: column;
+  .map-legend {
+    gap: 10px;
+    font-size: 0.66rem;
   }
 }

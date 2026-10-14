@@ -3,7 +3,12 @@ import * as maplibregl from 'maplibre-gl'
 import mapLibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import './App.css'
+import type { FeatureCollection, Polygon } from 'geojson'
 import type { LiveMatch, MatchesResponse } from '../api/matches.ts'
+// Stand rings (OSM stadium outline minus the pitch), generated from OpenStreetMap
+import stadiumStandsData from './data/stadium-stands.json'
+
+const stadiumStands = stadiumStandsData as FeatureCollection<Polygon, { id: string; height: number }>
 
 type StadiumStatus = 'live' | 'upcoming' | 'finished' | 'idle'
 type Filter = 'todos' | 'en vivo' | 'próximos' | 'finalizados'
@@ -18,6 +23,8 @@ type StadiumMatch = {
   home?: string
   rival: string
   description: string
+  // Short label shown above the marker, e.g. "BOC 2-1 RIV"
+  pin?: string
 }
 
 type Stadium = {
@@ -48,7 +55,8 @@ const stadiums: Stadium[] = [
       score: '2 - 1',
       minute: '67’',
       rival: 'Rival',
-      description: 'Resultado de ejemplo: hoy no hay partido en La Bombonera.'
+      description: 'Resultado de ejemplo: hoy no hay partido en La Bombonera.',
+      pin: 'BOC 2-1'
     }
   },
   {
@@ -187,6 +195,11 @@ const kickoffFormat = new Intl.DateTimeFormat('es-AR', {
 function toStadiumMatch(match: LiveMatch, stadium: Stadium): StadiumMatch {
   const score =
     match.status === 'upcoming' ? 'Por definir' : `${match.homeScore} - ${match.awayScore}`
+  const time = kickoffFormat.format(new Date(match.kickoff))
+  const pin =
+    match.status === 'upcoming'
+      ? `${match.homeAbbr}-${match.awayAbbr} ${time}`
+      : `${match.homeAbbr} ${match.homeScore}-${match.awayScore} ${match.awayAbbr}`
   const description =
     match.status === 'live'
       ? `${match.homeTeam} recibe a ${match.awayTeam} en ${stadium.name}.`
@@ -197,12 +210,13 @@ function toStadiumMatch(match: LiveMatch, stadium: Stadium): StadiumMatch {
   return {
     status: match.status,
     competition: match.competition,
-    kickoff: `Hoy ${kickoffFormat.format(new Date(match.kickoff))}`,
+    kickoff: `Hoy ${time}`,
     score,
     minute: match.minute,
     home: match.homeTeam,
     rival: match.awayTeam,
-    description
+    description,
+    pin
   }
 }
 
@@ -219,6 +233,61 @@ const statusLabels: Record<StadiumStatus, string> = {
   finished: 'finalizado',
   idle: 'sin partido'
 }
+
+// Layers that add clutter around the stadiums: POIs, transit stops, minor street names, shields
+const hiddenLayers = [
+  'road_one_way_arrow',
+  'road_one_way_arrow_opposite',
+  'poi_r20',
+  'poi_r7',
+  'poi_r1',
+  'poi_transit',
+  'highway-name-path',
+  'highway-name-minor',
+  'highway-shield-non-us',
+  'highway-shield-us-interstate',
+  'road_shield_us',
+  'airport'
+]
+
+const BUILDING_MAX_HEIGHT = 9
+
+function simplifyMap(map: maplibregl.Map) {
+  hiddenLayers.forEach((layerId) => {
+    if (map.getLayer(layerId)) map.setLayoutProperty(layerId, 'visibility', 'none')
+  })
+}
+
+function addStadiumStands(map: maplibregl.Map) {
+  if (map.getSource('stadium-stands')) return
+  const firstSymbolLayer = map.getStyle().layers.find((layer) => layer.type === 'symbol')?.id
+
+  map.addSource('stadium-stands', { type: 'geojson', data: stadiumStands })
+  map.addLayer(
+    {
+      id: 'stadium-stands',
+      type: 'fill-extrusion',
+      source: 'stadium-stands',
+      minzoom: 11,
+      paint: {
+        'fill-extrusion-color': '#f4fbff',
+        'fill-extrusion-height': ['get', 'height'],
+        'fill-extrusion-base': 0,
+        'fill-extrusion-opacity': 0.95,
+        'fill-extrusion-vertical-gradient': true
+      }
+    },
+    firstSymbolLayer
+  )
+}
+
+function stadiumBounds() {
+  const bounds = new maplibregl.LngLatBounds()
+  stadiums.forEach((stadium) => bounds.extend(stadium.position))
+  return bounds
+}
+
+const isCompactScreen = () => window.matchMedia('(max-width: 780px)').matches
 
 function applyLpfMapPalette(map: maplibregl.Map) {
   const setPaint = (layerId: string, property: string, value: string | number | boolean) => {
@@ -288,7 +357,7 @@ function App() {
   const markerRefs = useRef<Map<string, maplibregl.Marker>>(new Map())
   const [activeFilter, setActiveFilter] = useState<Filter>('todos')
   const [selectedId, setSelectedId] = useState('bombonera')
-  const [detailOpen, setDetailOpen] = useState(true)
+  const [detailOpen, setDetailOpen] = useState(() => !isCompactScreen())
   const [markersReady, setMarkersReady] = useState(false)
   const [liveMatches, setLiveMatches] = useState<LiveMatch[]>([])
   const [loadingMatches, setLoadingMatches] = useState(false)
@@ -353,12 +422,18 @@ function App() {
     const map = new maplibregl.Map({
       container: mapContainerRef.current,
       style: 'https://tiles.openfreemap.org/styles/liberty',
-      center: stadiums[0].position,
-      zoom: 14.4,
-      pitch: 58,
-      bearing: -12,
-      maxPitch: 70
+      bounds: stadiumBounds(),
+      fitBoundsOptions: {
+        padding: isCompactScreen()
+          ? { top: 190, bottom: 40, left: 24, right: 24 }
+          : { top: 170, bottom: 70, left: 70, right: 430 }
+      },
+      maxPitch: 70,
+      // Collapsed into an (i) button so it doesn't compete with the legend
+      attributionControl: { compact: true }
     })
+    // Tilt after framing so every stadium stays in view
+    map.jumpTo({ pitch: 45, bearing: -12 })
 
     mapRef.current = map
 
@@ -371,20 +446,31 @@ function App() {
       'top-right'
     )
 
+    // The compact attribution starts expanded until the first interaction; start it collapsed
+    map.once('idle', () => {
+      map
+        .getContainer()
+        .querySelector('.maplibregl-ctrl-attrib')
+        ?.classList.remove('maplibregl-compact-show')
+    })
+
     map.on('style.load', () => {
       applyLpfMapPalette(map)
+      simplifyMap(map)
+      addStadiumStands(map)
 
       if (map.getLayer('building-3d')) {
         map.setLayerZoomRange('building-3d', 12, 24)
+        // Keep regular buildings low so the stadium stands rise above them
         map.setPaintProperty('building-3d', 'fill-extrusion-base', [
-          'coalesce',
-          ['get', 'render_min_height'],
-          0
+          'min',
+          ['coalesce', ['get', 'render_min_height'], 0],
+          BUILDING_MAX_HEIGHT
         ])
         map.setPaintProperty('building-3d', 'fill-extrusion-height', [
-          '*',
+          'min',
           ['coalesce', ['get', 'render_height'], 5],
-          5
+          BUILDING_MAX_HEIGHT
         ])
       }
 
@@ -394,14 +480,14 @@ function App() {
         markerElement.className = 'map-marker idle'
         markerElement.setAttribute('aria-label', stadium.name)
         markerElement.title = `${stadium.club} · ${stadium.name}`
-        markerElement.innerHTML = '<span class="marker-dot" />'
+        markerElement.innerHTML = '<span class="marker-pin"></span><span class="marker-dot"></span>'
         markerElement.addEventListener('click', () => {
           setSelectedId(stadium.id)
           setDetailOpen(true)
           map.flyTo({
             center: stadium.position,
             zoom: 15.5,
-            pitch: 66,
+            pitch: 60,
             bearing: -12,
             speed: 0.8,
             curve: 1.35
@@ -410,7 +496,9 @@ function App() {
 
         const marker = new maplibregl.Marker({
           element: markerElement,
-          anchor: 'center'
+          // The dot sits at the bottom of the element; shift by half its size to centre it on the stadium
+          anchor: 'bottom',
+          offset: [0, 11]
         })
           .setLngLat(stadium.position)
           .addTo(map)
@@ -441,6 +529,12 @@ function App() {
       markerElement.classList.add(stadium.match.status)
       markerElement.style.display = visibleIds.has(stadium.id) ? 'flex' : 'none'
       markerElement.classList.toggle('selected', stadium.id === selectedId)
+
+      const pin = markerElement.querySelector<HTMLElement>('.marker-pin')
+      if (pin) {
+        pin.textContent = stadium.match.pin ?? ''
+        pin.hidden = !stadium.match.pin
+      }
     })
   }, [markersReady, stadiumViews, visibleStadiums, selectedId])
 
@@ -450,12 +544,27 @@ function App() {
 
   return (
     <div className="app-shell">
-      <div className="topbar">
-        <div className="brand-block">
-          <div className="brand-mark">LPF</div>
-          <div className="brand-copy">
-            <span className="eyebrow">Mapa de partidos</span>
-            <h1>FulboMap CABA</h1>
+      <header className="hud">
+        <div className="hud-main">
+          <div className="brand-block">
+            <div className="brand-mark">LPF</div>
+            <div className="brand-copy">
+              <span className="eyebrow">Mapa de partidos</span>
+              <h1>FulboMap CABA</h1>
+            </div>
+          </div>
+
+          <div className="filter-bar">
+            {filters.map((filter) => (
+              <button
+                key={filter.key}
+                type="button"
+                className={filter.key === activeFilter ? 'filter active' : 'filter'}
+                onClick={() => setActiveFilter(filter.key)}
+              >
+                {filter.label}
+              </button>
+            ))}
           </div>
         </div>
 
@@ -473,20 +582,7 @@ function App() {
             {loadingMatches ? 'actualizando…' : 'actualizar'}
           </button>
         </div>
-      </div>
-
-      <div className="filter-bar">
-        {filters.map((filter) => (
-          <button
-            key={filter.key}
-            type="button"
-            className={filter.key === activeFilter ? 'filter active' : 'filter'}
-            onClick={() => setActiveFilter(filter.key)}
-          >
-            {filter.label}
-          </button>
-        ))}
-      </div>
+      </header>
 
       <main className="map-stage">
         <div className="map-surface">
@@ -547,6 +643,7 @@ function App() {
             <span><i className="legend-live" /> en vivo</span>
             <span><i className="legend-upcoming" /> próximo</span>
             <span><i className="legend-finished" /> finalizado</span>
+            <span><i className="legend-idle" /> sin partido</span>
           </div>
         </div>
       </main>

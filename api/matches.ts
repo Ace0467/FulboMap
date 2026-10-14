@@ -8,6 +8,8 @@ export type LiveMatch = {
   venueId: string
   homeTeam: string
   awayTeam: string
+  homeAbbr: string
+  awayAbbr: string
   status: MatchStatus
   homeScore: string
   awayScore: string
@@ -24,7 +26,7 @@ export type MatchesResponse = {
 type EspnCompetitor = {
   homeAway: 'home' | 'away'
   score?: string
-  team: { id: string; displayName: string; shortDisplayName: string }
+  team: { id: string; abbreviation?: string; displayName: string; shortDisplayName: string }
 }
 
 type EspnEvent = {
@@ -87,6 +89,8 @@ function toMatch(event: EspnEvent, competition: string): LiveMatch | null {
     venueId,
     homeTeam: teamName(home),
     awayTeam: teamName(away),
+    homeAbbr: home.team.abbreviation ?? teamName(home).slice(0, 3).toUpperCase(),
+    awayAbbr: away.team.abbreviation ?? teamName(away).slice(0, 3).toUpperCase(),
     status,
     homeScore: home.score ?? '0',
     awayScore: away.score ?? '0',
