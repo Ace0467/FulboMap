@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import * as maplibregl from 'maplibre-gl'
 import mapLibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
+import type { FeatureCollection, Polygon } from 'geojson'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import './App.css'
 
@@ -116,6 +117,54 @@ const statusLabels: Record<StadiumStatus, string> = {
   idle: 'sin partido'
 }
 
+const stadiumSizes: Record<string, { length: number; width: number; height: number }> = {
+  bombonera: { length: 150, width: 118, height: 72 },
+  monumental: { length: 245, width: 188, height: 88 },
+  gasometro: { length: 185, width: 140, height: 58 },
+  amalfitani: { length: 190, width: 145, height: 56 },
+  duco: { length: 165, width: 125, height: 54 },
+  maradona: { length: 150, width: 112, height: 48 }
+}
+
+function stadiumRing(
+  [longitude, latitude]: [number, number],
+  length: number,
+  width: number
+): [number, number][] {
+  const ring: [number, number][] = []
+  const latitudeScale = 110_540
+  const longitudeScale = 111_320 * Math.cos((latitude * Math.PI) / 180)
+
+  for (let step = 0; step <= 48; step += 1) {
+    const angle = (step / 48) * Math.PI * 2
+    const x = Math.cos(angle) * (length / 2)
+    const y = Math.sin(angle) * (width / 2)
+    ring.push([longitude + x / longitudeScale, latitude + y / latitudeScale])
+  }
+
+  return ring
+}
+
+const stadiumModels: FeatureCollection<Polygon> = {
+  type: 'FeatureCollection',
+  features: stadiums.map((stadium) => {
+    const size = stadiumSizes[stadium.id]
+
+    return {
+      type: 'Feature',
+      id: stadium.id,
+      properties: { id: stadium.id, height: size.height },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          stadiumRing(stadium.position, size.length, size.width),
+          stadiumRing(stadium.position, size.length * 0.62, size.width * 0.58).reverse()
+        ]
+      }
+    }
+  })
+}
+
 function App() {
   const mapContainerRef = useRef<HTMLDivElement | null>(null)
   const mapRef = useRef<maplibregl.Map | null>(null)
@@ -149,8 +198,8 @@ function App() {
       style: 'https://tiles.openfreemap.org/styles/liberty',
       center: stadiums[0].position,
       zoom: 14.4,
-      pitch: 56,
-      bearing: -18,
+      pitch: 58,
+      bearing: -12,
       maxPitch: 70
     })
 
@@ -186,8 +235,8 @@ function App() {
 
       if (map.getLayer('building-3d')) {
         map.setLayerZoomRange('building-3d', 12, 24)
-        map.setPaintProperty('building-3d', 'fill-extrusion-color', '#67b6e8')
-        map.setPaintProperty('building-3d', 'fill-extrusion-opacity', 0.96)
+        map.setPaintProperty('building-3d', 'fill-extrusion-color', '#49a8dd')
+        map.setPaintProperty('building-3d', 'fill-extrusion-opacity', 1)
         map.setPaintProperty('building-3d', 'fill-extrusion-vertical-gradient', true)
         map.setPaintProperty('building-3d', 'fill-extrusion-base', [
           'coalesce',
@@ -197,8 +246,24 @@ function App() {
         map.setPaintProperty('building-3d', 'fill-extrusion-height', [
           '*',
           ['coalesce', ['get', 'render_height'], 5],
-          2.4
+          5
         ])
+      }
+
+      if (!map.getSource('stadium-models')) {
+        map.addSource('stadium-models', { type: 'geojson', data: stadiumModels })
+        map.addLayer({
+          id: 'stadium-3d',
+          type: 'fill-extrusion',
+          source: 'stadium-models',
+          paint: {
+            'fill-extrusion-color': '#36c9ff',
+            'fill-extrusion-height': ['get', 'height'],
+            'fill-extrusion-base': 0,
+            'fill-extrusion-opacity': 0.96,
+            'fill-extrusion-vertical-gradient': true
+          }
+        })
       }
 
       stadiums.forEach((stadium) => {
@@ -213,9 +278,9 @@ function App() {
           setDetailOpen(true)
           map.flyTo({
             center: stadium.position,
-            zoom: 15.2,
-            pitch: 65,
-            bearing: -18,
+            zoom: 15.5,
+            pitch: 66,
+            bearing: -12,
             speed: 0.8,
             curve: 1.35
           })
