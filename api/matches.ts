@@ -24,7 +24,7 @@ export type MatchesResponse = {
 type EspnCompetitor = {
   homeAway: 'home' | 'away'
   score?: string
-  team: { id: string; shortDisplayName: string }
+  team: { id: string; displayName: string; shortDisplayName: string }
 }
 
 type EspnEvent = {
@@ -44,6 +44,8 @@ type EspnScoreboard = {
 const SCOREBOARD_URL = 'https://site.api.espn.com/apis/site/v2/sports/soccer'
 const LEAGUES = [
   { slug: 'arg.1', label: 'Liga Profesional' },
+  { slug: 'arg.2', label: 'Primera Nacional' },
+  { slug: 'arg.3', label: 'Primera B' },
   { slug: 'arg.copa', label: 'Copa Argentina' },
   { slug: 'conmebol.libertadores', label: 'Copa Libertadores' },
   { slug: 'conmebol.sudamericana', label: 'Copa Sudamericana' }
@@ -54,6 +56,12 @@ const DAY_MS = 24 * 60 * 60 * 1000
 function argentinaDate(date: Date) {
   // en-CA formats as YYYY-MM-DD
   return new Intl.DateTimeFormat('en-CA', { timeZone: TIME_ZONE }).format(date)
+}
+
+// ESPN's short names are sometimes clipped ("Excursionist"), so only use them for long names.
+function teamName(competitor: EspnCompetitor) {
+  const full = competitor.team.displayName.trim()
+  return full.length <= 16 ? full : competitor.team.shortDisplayName.trim()
 }
 
 function toMatch(event: EspnEvent, competition: string): LiveMatch | null {
@@ -77,8 +85,8 @@ function toMatch(event: EspnEvent, competition: string): LiveMatch | null {
   return {
     id: event.id,
     venueId,
-    homeTeam: home.team.shortDisplayName.trim(),
-    awayTeam: away.team.shortDisplayName.trim(),
+    homeTeam: teamName(home),
+    awayTeam: teamName(away),
     status,
     homeScore: home.score ?? '0',
     awayScore: away.score ?? '0',

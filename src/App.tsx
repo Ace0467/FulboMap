@@ -90,6 +90,78 @@ const stadiums: Stadium[] = [
     club: 'Argentinos Juniors',
     position: [-58.4726194, -34.6061215],
     espnVenueId: '10785'
+  },
+  {
+    id: 'laza',
+    name: 'Estadio Guillermo Laza',
+    neighborhood: 'Villa Soldati',
+    club: 'Deportivo Riestra',
+    position: [-58.4435109, -34.6533436],
+    espnVenueId: '10787'
+  },
+  {
+    id: 'chiqui-tapia',
+    name: 'Estadio Claudio Chiqui Tapia',
+    neighborhood: 'Barracas',
+    club: 'Barracas Central',
+    position: [-58.3967965, -34.6475809],
+    espnVenueId: '10793'
+  },
+  {
+    id: 'islas-malvinas',
+    name: 'Estadio Islas Malvinas',
+    neighborhood: 'Monte Castro',
+    club: 'All Boys',
+    position: [-58.4977469, -34.6165101],
+    espnVenueId: '10985'
+  },
+  {
+    id: 'kolbovsky',
+    name: 'Estadio Don León Kolbovsky',
+    neighborhood: 'Villa Crespo',
+    club: 'Atlanta',
+    position: [-58.4441846, -34.5909876],
+    espnVenueId: '5670'
+  },
+  {
+    id: 'pasquale',
+    name: 'Estadio Juan Pasquale',
+    neighborhood: 'Núñez',
+    club: 'Defensores de Belgrano',
+    position: [-58.4618769, -34.5412006],
+    espnVenueId: '10977'
+  },
+  {
+    id: 'etcheverri',
+    name: 'Estadio Arquitecto Ricardo Etcheverri',
+    neighborhood: 'Caballito',
+    club: 'Ferro Carril Oeste',
+    position: [-58.4478378, -34.6187654],
+    espnVenueId: '10981'
+  },
+  {
+    id: 'mataderos',
+    name: 'Estadio República de Mataderos',
+    neighborhood: 'Mataderos',
+    club: 'Nueva Chicago',
+    position: [-58.4995224, -34.6680105],
+    espnVenueId: '10980'
+  },
+  {
+    id: 'alfredo-ramos',
+    name: 'Estadio Alfredo Ramos',
+    neighborhood: 'Agronomía',
+    club: 'Comunicaciones',
+    position: [-58.4884999, -34.5938106],
+    espnVenueId: '3643'
+  },
+  {
+    id: 'excursionistas',
+    name: 'Estadio de Excursionistas',
+    neighborhood: 'Belgrano',
+    club: 'Excursionistas',
+    position: [-58.4429075, -34.5589889],
+    espnVenueId: '6110'
   }
 ]
 
