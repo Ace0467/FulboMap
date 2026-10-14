@@ -92,7 +92,7 @@ const stadiums: Stadium[] = [
     name: 'Estadio Diego Armando Maradona',
     neighborhood: 'La Paternal',
     club: 'Argentinos Juniors',
-    position: [-58.4738561, -34.6060931],
+    position: [-58.4726194, -34.6061215],
     status: 'live',
     competition: 'Primera División',
     kickoff: 'Hoy 20:00',
