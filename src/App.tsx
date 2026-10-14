@@ -107,7 +107,7 @@ const stadiums: Stadium[] = [
     position: [-58.4726194, -34.6061215],
     espnVenueId: '10785',
     // Red with a white sash, inside a blue inner outline
-    kit: 'radial-gradient(circle closest-side, transparent 82%, #1d4fa0 85%), linear-gradient(45deg, #e30613 0 38%, #ffffff 38% 62%, #e30613 62%)'
+    kit: 'radial-gradient(circle closest-side, transparent 72%, #1d4fa0 75%), linear-gradient(45deg, #e30613 0 38%, #ffffff 38% 62%, #e30613 62%)'
   },
   {
     id: 'laza',
