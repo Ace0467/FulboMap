@@ -117,6 +117,68 @@ const statusLabels: Record<StadiumStatus, string> = {
   idle: 'sin partido'
 }
 
+function applyLpfMapPalette(map: maplibregl.Map) {
+  const setPaint = (layerId: string, property: string, value: string | number | boolean) => {
+    if (map.getLayer(layerId)) {
+      map.setPaintProperty(layerId, property as never, value as never)
+    }
+  }
+
+  setPaint('background', 'background-color', '#dceefa')
+  setPaint('water', 'fill-color', '#76c9eb')
+  setPaint('park', 'fill-color', '#b6dfd1')
+  setPaint('park', 'fill-opacity', 0.88)
+  setPaint('park_outline', 'line-color', '#7fc5b5')
+  setPaint('landuse_residential', 'fill-color', '#d2e7f3')
+  setPaint('landcover_wood', 'fill-color', '#8acbb8')
+  setPaint('landcover_grass', 'fill-color', '#c2e5d8')
+  setPaint('landcover_sand', 'fill-color', '#e5edf0')
+  setPaint('landuse_pitch', 'fill-color', '#a9d9d0')
+  setPaint('landuse_track', 'fill-color', '#a9d9d0')
+  setPaint('landuse_cemetery', 'fill-color', '#b9ddcf')
+  setPaint('landuse_hospital', 'fill-color', '#d2e5ef')
+  setPaint('landuse_school', 'fill-color', '#d2e5ef')
+  setPaint('waterway_river', 'line-color', '#56b9e3')
+  setPaint('waterway_other', 'line-color', '#78c6e5')
+  setPaint('building', 'fill-color', '#a9cfe3')
+  setPaint('building', 'fill-outline-color', '#82b6d3')
+  setPaint('building-3d', 'fill-extrusion-color', '#49a8dd')
+  setPaint('building-3d', 'fill-extrusion-opacity', 1)
+  setPaint('building-3d', 'fill-extrusion-vertical-gradient', true)
+  setPaint('highway-name-major', 'text-color', '#285c7e')
+  setPaint('highway-name-major', 'text-halo-color', '#eaf6fc')
+  setPaint('highway-name-minor', 'text-color', '#52748c')
+  setPaint('highway-name-minor', 'text-halo-color', '#eaf6fc')
+  setPaint('water_name_point_label', 'text-color', '#367fa5')
+  setPaint('water_name_point_label', 'text-halo-color', '#dff3fb')
+  setPaint('water_name_line_label', 'text-color', '#367fa5')
+  setPaint('water_name_line_label', 'text-halo-color', '#dff3fb')
+
+  map.getStyle().layers.forEach((layer) => {
+    if (layer.type !== 'line' || !/^(road|bridge|tunnel)_/.test(layer.id)) return
+
+    const color = layer.id.includes('motorway')
+      ? '#398bbc'
+      : layer.id.includes('trunk_primary') || layer.id.includes('trunk')
+        ? '#58aedd'
+        : layer.id.includes('secondary_tertiary')
+          ? '#80c2e6'
+          : layer.id.includes('minor')
+            ? '#f8fcff'
+            : layer.id.includes('service_track')
+              ? '#c2dfef'
+              : layer.id.includes('path_pedestrian')
+                ? '#91c8e3'
+                : layer.id.includes('casing')
+                  ? '#78abc6'
+                  : '#a6cfe3'
+
+    setPaint(layer.id, 'line-color', color)
+  })
+
+  setPaint('road_area_pattern', 'fill-color', '#a9d2e6')
+}
+
 const stadiumSizes: Record<string, { length: number; width: number; height: number }> = {
   bombonera: { length: 150, width: 118, height: 72 },
   monumental: { length: 245, width: 188, height: 88 },
@@ -215,29 +277,10 @@ function App() {
     )
 
     map.on('style.load', () => {
-      if (!map.getSource('osm-base')) {
-        map.addSource('osm-base', {
-          type: 'raster',
-          tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
-          tileSize: 256,
-          attribution: '© OpenStreetMap contributors'
-        })
-        map.addLayer(
-          {
-            id: 'osm-base-layer',
-            type: 'raster',
-            source: 'osm-base',
-            paint: { 'raster-opacity': 1 }
-          },
-          'park'
-        )
-      }
+      applyLpfMapPalette(map)
 
       if (map.getLayer('building-3d')) {
         map.setLayerZoomRange('building-3d', 12, 24)
-        map.setPaintProperty('building-3d', 'fill-extrusion-color', '#49a8dd')
-        map.setPaintProperty('building-3d', 'fill-extrusion-opacity', 1)
-        map.setPaintProperty('building-3d', 'fill-extrusion-vertical-gradient', true)
         map.setPaintProperty('building-3d', 'fill-extrusion-base', [
           'coalesce',
           ['get', 'render_min_height'],
@@ -248,35 +291,6 @@ function App() {
           ['coalesce', ['get', 'render_height'], 5],
           5
         ])
-      }
-
-      if (!map.getSource('brand-tint')) {
-        map.addSource('brand-tint', {
-          type: 'geojson',
-          data: {
-            type: 'Feature',
-            properties: {},
-            geometry: {
-              type: 'Polygon',
-              coordinates: [[
-                [-179.999, -85],
-                [179.999, -85],
-                [179.999, 85],
-                [-179.999, 85],
-                [-179.999, -85]
-              ]]
-            }
-          }
-        })
-        map.addLayer({
-          id: 'brand-tint-layer',
-          type: 'fill',
-          source: 'brand-tint',
-          paint: {
-            'fill-color': '#378fca',
-            'fill-opacity': 0.18
-          }
-        }, 'building-3d')
       }
 
       if (!map.getSource('stadium-models')) {
