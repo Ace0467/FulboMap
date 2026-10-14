@@ -306,7 +306,7 @@
   right: 18px;
   bottom: 18px;
   z-index: 40;
-  width: min(360px, calc(100vw - 32px));
+  width: min(420px, calc(100vw - 32px));
   padding: 18px;
   border-radius: var(--radius-lg);
   background: var(--surface);
@@ -425,14 +425,11 @@
 
 .score-box {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  grid-template-areas:
-    '. clock .'
-    'home score away';
+  /* Equal side columns keep the clock in the middle of the card */
+  grid-template-columns: minmax(0, 1fr) auto auto auto minmax(0, 1fr);
   align-items: center;
-  column-gap: 12px;
-  row-gap: 2px;
-  padding: 12px 16px 14px;
+  column-gap: 10px;
+  padding: 14px 16px;
   border-radius: var(--radius);
   background: var(--surface-raised);
 }
@@ -444,17 +441,12 @@
   line-height: 1.25;
 }
 
-.score-team.home {
-  grid-area: home;
-}
-
 .score-team.away {
-  grid-area: away;
   text-align: right;
 }
 
 .score-box .score-value {
-  grid-area: score;
+  min-width: 1ch;
   color: var(--text);
   font-size: 1.8rem;
   font-weight: 800;
@@ -466,7 +458,7 @@
 
 /* The match clock: the most prominent thing after the score while live */
 .score-clock {
-  grid-area: clock;
+  min-width: 54px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -484,6 +476,15 @@
   font-size: 1.05rem;
   font-weight: 800;
   letter-spacing: 0;
+}
+
+/* Upcoming: the kickoff time stands in for the score */
+.score-clock.upcoming {
+  color: var(--text);
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  text-transform: none;
 }
 
 .score-clock.live::before {
@@ -677,6 +678,31 @@
 }
 
 @media (max-width: 520px) {
+  .score-box {
+    column-gap: 7px;
+    padding: 12px;
+  }
+
+  .score-team {
+    font-size: 0.8rem;
+  }
+
+  .score-box .score-value {
+    font-size: 1.6rem;
+  }
+
+  .score-clock {
+    min-width: 44px;
+  }
+
+  .score-clock.live {
+    font-size: 0.95rem;
+  }
+
+  .score-clock.upcoming {
+    font-size: 1.4rem;
+  }
+
   .brand-block {
     padding: 10px 14px 12px;
   }

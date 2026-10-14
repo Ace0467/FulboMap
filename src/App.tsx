@@ -16,8 +16,10 @@ type Filter = 'todos' | 'en vivo' | 'próximos' | 'finalizados'
 type StadiumMatch = {
   status: StadiumStatus
   competition: string
-  // The result, or the kickoff time ("20:30") while the match hasn't started
-  score: string
+  homeScore?: string
+  awayScore?: string
+  // "20:30", only while the match hasn't started
+  kickoffTime?: string
   minute: string
   // Defaults to the stadium's club; differs for cup matches at a neutral venue
   home?: string
@@ -56,7 +58,8 @@ const stadiums: Stadium[] = [
     placeholder: {
       status: 'live',
       competition: 'Partido de ejemplo',
-      score: '2 - 1',
+      homeScore: '2',
+      awayScore: '1',
       minute: '67’',
       rival: 'Rival',
       goals: [
@@ -201,7 +204,6 @@ const stadiums: Stadium[] = [
 const noMatch: StadiumMatch = {
   status: 'idle',
   competition: 'Liga Profesional',
-  score: '',
   minute: '',
   rival: '',
   goals: [],
@@ -224,7 +226,9 @@ function toStadiumMatch(match: LiveMatch): StadiumMatch {
   return {
     status: match.status,
     competition: match.competition,
-    score: upcoming ? time : `${match.homeScore} - ${match.awayScore}`,
+    homeScore: upcoming ? undefined : match.homeScore,
+    awayScore: upcoming ? undefined : match.awayScore,
+    kickoffTime: upcoming ? time : undefined,
     minute: match.minute,
     home: match.homeTeam,
     rival: match.awayTeam,
@@ -235,9 +239,9 @@ function toStadiumMatch(match: LiveMatch): StadiumMatch {
   }
 }
 
-// Shown under the score: the running minute while live, otherwise a short word
+// Shown between the two scores: the running minute, the kickoff time, or "Final"
 function clockLabel(match: StadiumMatch) {
-  if (match.status === 'upcoming') return 'Hoy'
+  if (match.status === 'upcoming') return match.kickoffTime ?? ''
   if (match.status === 'finished') return 'Final'
   return match.minute
 }
@@ -655,15 +659,16 @@ function App() {
                 <p className="description">{selectedMatch.description}</p>
               ) : (
                 <>
-                  {/* Home on the left, away on the right; the clock sits above the score */}
+                  {/* Home | goals | clock | goals | away */}
                   <div className="score-box">
-                    <span className={`score-clock ${selectedMatch.status}`}>
-                      {clockLabel(selectedMatch)}
-                    </span>
                     <strong className="score-team home">
                       {selectedMatch.home ?? selectedStadium.club}
                     </strong>
-                    <strong className="score-value">{selectedMatch.score}</strong>
+                    <strong className="score-value">{selectedMatch.homeScore}</strong>
+                    <span className={`score-clock ${selectedMatch.status}`}>
+                      {clockLabel(selectedMatch)}
+                    </span>
+                    <strong className="score-value">{selectedMatch.awayScore}</strong>
                     <strong className="score-team away">{selectedMatch.rival}</strong>
                   </div>
 
