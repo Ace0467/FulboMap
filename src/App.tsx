@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 
 type StadiumStatus = 'live' | 'upcoming' | 'finished' | 'idle'
@@ -123,6 +123,8 @@ const statusLabels: Record<StadiumStatus, string> = {
 function App() {
   const [activeFilter, setActiveFilter] = useState<Filter>('todos')
   const [selectedId, setSelectedId] = useState('bombonera')
+  const [hoveredId, setHoveredId] = useState<string | null>(null)
+  const [detailOpen, setDetailOpen] = useState(true)
 
   const visibleStadiums = useMemo(() => {
     if (activeFilter === 'todos') return stadiums
@@ -131,8 +133,18 @@ function App() {
     return stadiums.filter((stadium) => stadium.status === 'finished')
   }, [activeFilter])
 
+  useEffect(() => {
+    if (!visibleStadiums.some((stadium) => stadium.id === selectedId)) {
+      const fallbackId = visibleStadiums[0]?.id ?? stadiums[0].id
+      setSelectedId(fallbackId)
+      setDetailOpen(true)
+    }
+  }, [selectedId, visibleStadiums])
+
   const selectedStadium =
     visibleStadiums.find((stadium) => stadium.id === selectedId) ?? visibleStadiums[0] ?? stadiums[0]
+
+  const previewStadium = hoveredId ? stadiums.find((stadium) => stadium.id === hoveredId) ?? null : null
 
   return (
     <div className="app-shell">
@@ -188,7 +200,12 @@ function App() {
                 type="button"
                 className={markerClasses.join(' ')}
                 style={{ left: `${stadium.x}%`, top: `${stadium.y}%` }}
-                onClick={() => setSelectedId(stadium.id)}
+                onClick={() => {
+                  setSelectedId(stadium.id)
+                  setDetailOpen(true)
+                }}
+                onMouseEnter={() => setHoveredId(stadium.id)}
+                onMouseLeave={() => setHoveredId((current) => (current === stadium.id ? null : current))}
                 aria-label={stadium.name}
                 title={`${stadium.club} · ${stadium.name}`}
               >
@@ -197,49 +214,66 @@ function App() {
             )
           })}
 
-          <div className="info-card">
-            <div className="card-topline">
-              <span className={`status-tag ${selectedStadium.status}`}>
-                {statusLabels[selectedStadium.status]}
-              </span>
-              <span className="minute-chip">{selectedStadium.minute}</span>
+          {previewStadium && (
+            <div
+              className="map-preview"
+              style={{ left: `${previewStadium.x}%`, top: `${previewStadium.y}%` }}
+            >
+              <strong>{previewStadium.club}</strong>
+              <span>{previewStadium.name}</span>
             </div>
+          )}
 
-            <div className="card-header">
-              <div>
-                <p className="card-league">{selectedStadium.competition}</p>
-                <h2>{selectedStadium.name}</h2>
+          {detailOpen && (
+            <div className="info-card">
+              <div className="card-topline">
+                <span className={`status-tag ${selectedStadium.status}`}>
+                  {statusLabels[selectedStadium.status]}
+                </span>
+                <span className="minute-chip">{selectedStadium.minute}</span>
               </div>
-              <button type="button" className="close-button" aria-label="Cerrar detalle">
-                ×
-              </button>
+
+              <div className="card-header">
+                <div>
+                  <p className="card-league">{selectedStadium.competition}</p>
+                  <h2>{selectedStadium.name}</h2>
+                </div>
+                <button
+                  type="button"
+                  className="close-button"
+                  aria-label="Cerrar detalle"
+                  onClick={() => setDetailOpen(false)}
+                >
+                  ×
+                </button>
+              </div>
+
+              <div className="score-box">
+                <div>
+                  <span>Local</span>
+                  <strong>{selectedStadium.club}</strong>
+                </div>
+                <strong className="score-value">{selectedStadium.score}</strong>
+                <div>
+                  <span>Rival</span>
+                  <strong>FC rival</strong>
+                </div>
+              </div>
+
+              <div className="info-grid">
+                <div>
+                  <label>Horario</label>
+                  <strong>{selectedStadium.kickoff}</strong>
+                </div>
+                <div>
+                  <label>Barrio</label>
+                  <strong>{selectedStadium.neighborhood}</strong>
+                </div>
+              </div>
+
+              <p className="description">{selectedStadium.description}</p>
             </div>
-
-            <div className="score-box">
-              <div>
-                <span>Local</span>
-                <strong>{selectedStadium.club}</strong>
-              </div>
-              <strong className="score-value">{selectedStadium.score}</strong>
-              <div>
-                <span>Rival</span>
-                <strong>FC rival</strong>
-              </div>
-            </div>
-
-            <div className="info-grid">
-              <div>
-                <label>Horario</label>
-                <strong>{selectedStadium.kickoff}</strong>
-              </div>
-              <div>
-                <label>Barrio</label>
-                <strong>{selectedStadium.neighborhood}</strong>
-              </div>
-            </div>
-
-            <p className="description">{selectedStadium.description}</p>
-          </div>
+          )}
 
           <div className="map-legend">
             <span><i className="legend-live" /> en vivo</span>
