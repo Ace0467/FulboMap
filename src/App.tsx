@@ -34,6 +34,8 @@ type Stadium = {
   club: string
   position: [number, number]
   espnVenueId: string
+  // Club shirt as a CSS background, drawn inside the marker dot
+  kit: string
   // Shown when the club has no real match today
   placeholder?: StadiumMatch
 }
@@ -48,6 +50,7 @@ const stadiums: Stadium[] = [
     club: 'Boca Juniors',
     position: [-58.3649163, -34.6355171],
     espnVenueId: '5348',
+    kit: 'linear-gradient(180deg, #0a3a8c 0 34%, #f5b800 34% 66%, #0a3a8c 66%)',
     placeholder: {
       status: 'live',
       competition: 'Partido de ejemplo',
@@ -65,7 +68,8 @@ const stadiums: Stadium[] = [
     neighborhood: 'Belgrano',
     club: 'River Plate',
     position: [-58.4497385, -34.5452932],
-    espnVenueId: '10786'
+    espnVenueId: '10786',
+    kit: 'linear-gradient(45deg, #ffffff 0 36%, #d6111e 36% 64%, #ffffff 64%)'
   },
   {
     id: 'gasometro',
@@ -73,7 +77,8 @@ const stadiums: Stadium[] = [
     neighborhood: 'Flores',
     club: 'San Lorenzo',
     position: [-58.4401364, -34.6520908],
-    espnVenueId: '10791'
+    espnVenueId: '10791',
+    kit: 'linear-gradient(90deg, #1b3a8a 0 25%, #c8102e 25% 50%, #1b3a8a 50% 75%, #c8102e 75%)'
   },
   {
     id: 'amalfitani',
@@ -81,7 +86,8 @@ const stadiums: Stadium[] = [
     neighborhood: 'Liniers',
     club: 'Vélez Sarsfield',
     position: [-58.5206788, -34.6353382],
-    espnVenueId: '10761'
+    espnVenueId: '10761',
+    kit: 'conic-gradient(at 50% 82%, #ffffff 0 22deg, #1d4fa0 22deg 44deg, #ffffff 44deg 316deg, #1d4fa0 316deg 338deg, #ffffff 338deg)'
   },
   {
     id: 'duco',
@@ -89,7 +95,8 @@ const stadiums: Stadium[] = [
     neighborhood: 'Parque Patricios',
     club: 'Huracán',
     position: [-58.3965055, -34.6434694],
-    espnVenueId: '10783'
+    espnVenueId: '10783',
+    kit: 'radial-gradient(circle, #d91a21 0 32%, #ffffff 33%)'
   },
   {
     id: 'maradona',
@@ -97,7 +104,8 @@ const stadiums: Stadium[] = [
     neighborhood: 'La Paternal',
     club: 'Argentinos Juniors',
     position: [-58.4726194, -34.6061215],
-    espnVenueId: '10785'
+    espnVenueId: '10785',
+    kit: 'radial-gradient(circle, #e30613 0 52%, #ffffff 53% 66%, #e30613 67%)'
   },
   {
     id: 'laza',
@@ -105,7 +113,8 @@ const stadiums: Stadium[] = [
     neighborhood: 'Villa Soldati',
     club: 'Deportivo Riestra',
     position: [-58.4435109, -34.6533436],
-    espnVenueId: '10787'
+    espnVenueId: '10787',
+    kit: 'linear-gradient(180deg, #111111 0 34%, #ffffff 34% 66%, #111111 66%)'
   },
   {
     id: 'chiqui-tapia',
@@ -113,7 +122,8 @@ const stadiums: Stadium[] = [
     neighborhood: 'Barracas',
     club: 'Barracas Central',
     position: [-58.3967965, -34.6475809],
-    espnVenueId: '10793'
+    espnVenueId: '10793',
+    kit: 'linear-gradient(90deg, #d6111e 0 20%, #ffffff 20% 40%, #d6111e 40% 60%, #ffffff 60% 80%, #d6111e 80%)'
   },
   {
     id: 'islas-malvinas',
@@ -121,7 +131,8 @@ const stadiums: Stadium[] = [
     neighborhood: 'Monte Castro',
     club: 'All Boys',
     position: [-58.4977469, -34.6165101],
-    espnVenueId: '10985'
+    espnVenueId: '10985',
+    kit: 'linear-gradient(45deg, #ffffff 0 36%, #111111 36% 64%, #ffffff 64%)'
   },
   {
     id: 'kolbovsky',
@@ -129,7 +140,8 @@ const stadiums: Stadium[] = [
     neighborhood: 'Villa Crespo',
     club: 'Atlanta',
     position: [-58.4441846, -34.5909876],
-    espnVenueId: '5670'
+    espnVenueId: '5670',
+    kit: 'linear-gradient(90deg, #1d4fa0 0 25%, #f5c400 25% 50%, #1d4fa0 50% 75%, #f5c400 75%)'
   },
   {
     id: 'pasquale',
@@ -137,7 +149,8 @@ const stadiums: Stadium[] = [
     neighborhood: 'Núñez',
     club: 'Defensores de Belgrano',
     position: [-58.4618769, -34.5412006],
-    espnVenueId: '10977'
+    espnVenueId: '10977',
+    kit: 'linear-gradient(90deg, #d6111e 0 25%, #111111 25% 50%, #d6111e 50% 75%, #111111 75%)'
   },
   {
     id: 'etcheverri',
@@ -145,7 +158,8 @@ const stadiums: Stadium[] = [
     neighborhood: 'Caballito',
     club: 'Ferro Carril Oeste',
     position: [-58.4478378, -34.6187654],
-    espnVenueId: '10981'
+    espnVenueId: '10981',
+    kit: '#1a8a3a'
   },
   {
     id: 'mataderos',
@@ -153,7 +167,8 @@ const stadiums: Stadium[] = [
     neighborhood: 'Mataderos',
     club: 'Nueva Chicago',
     position: [-58.4995224, -34.6680105],
-    espnVenueId: '10980'
+    espnVenueId: '10980',
+    kit: 'linear-gradient(90deg, #138a3c 0 25%, #111111 25% 50%, #138a3c 50% 75%, #111111 75%)'
   },
   {
     id: 'alfredo-ramos',
@@ -161,7 +176,8 @@ const stadiums: Stadium[] = [
     neighborhood: 'Agronomía',
     club: 'Comunicaciones',
     position: [-58.4884999, -34.5938106],
-    espnVenueId: '3643'
+    espnVenueId: '3643',
+    kit: 'linear-gradient(90deg, #f5c400 0 50%, #111111 50%)'
   },
   {
     id: 'excursionistas',
@@ -169,7 +185,8 @@ const stadiums: Stadium[] = [
     neighborhood: 'Belgrano',
     club: 'Excursionistas',
     position: [-58.4429075, -34.5589889],
-    espnVenueId: '6110'
+    espnVenueId: '6110',
+    kit: 'linear-gradient(90deg, #138a3c 0 25%, #ffffff 25% 50%, #138a3c 50% 75%, #ffffff 75%)'
   }
 ]
 
@@ -482,6 +499,7 @@ function App() {
         markerElement.setAttribute('aria-label', stadium.name)
         markerElement.title = `${stadium.club} · ${stadium.name}`
         markerElement.innerHTML = '<span class="marker-pin"></span><span class="marker-dot"></span>'
+        markerElement.querySelector<HTMLElement>('.marker-dot')!.style.background = stadium.kit
         markerElement.addEventListener('click', () => {
           setSelectedId(stadium.id)
           setDetailOpen(true)
@@ -497,9 +515,9 @@ function App() {
 
         const marker = new maplibregl.Marker({
           element: markerElement,
-          // The dot sits at the bottom of the element; shift by half its size to centre it on the stadium
+          // The dot sits in a 30px slot at the bottom of the element; shift by half of it to centre it on the stadium
           anchor: 'bottom',
-          offset: [0, 11]
+          offset: [0, 15]
         })
           .setLngLat(stadium.position)
           .addTo(map)
