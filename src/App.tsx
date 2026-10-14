@@ -4,7 +4,7 @@ import mapLibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&ur
 import 'maplibre-gl/dist/maplibre-gl.css'
 import './App.css'
 import type { FeatureCollection, Polygon } from 'geojson'
-import type { LiveMatch, MatchesResponse } from '../api/matches.ts'
+import type { Goal, LiveMatch, MatchesResponse } from '../api/matches.ts'
 // Stand rings (OSM stadium outline minus the pitch), generated from OpenStreetMap
 import stadiumStandsData from './data/stadium-stands.json'
 
@@ -16,13 +16,15 @@ type Filter = 'todos' | 'en vivo' | 'próximos' | 'finalizados'
 type StadiumMatch = {
   status: StadiumStatus
   competition: string
-  kickoff: string
+  // The result, or the kickoff time ("20:30") while the match hasn't started
   score: string
   minute: string
   // Defaults to the stadium's club; differs for cup matches at a neutral venue
   home?: string
   rival: string
-  description: string
+  goals: Goal[]
+  // Only shown when the stadium has no match
+  description?: string
   // Short label shown above the marker, e.g. "BOC 2-1 RIV"
   pin?: string
 }
@@ -54,11 +56,14 @@ const stadiums: Stadium[] = [
     placeholder: {
       status: 'live',
       competition: 'Partido de ejemplo',
-      kickoff: 'Hoy 20:30',
       score: '2 - 1',
       minute: '67’',
       rival: 'Rival',
-      description: 'Resultado de ejemplo: hoy no hay partido en La Bombonera.',
+      goals: [
+        { side: 'home', player: 'Jugador A', minute: "23'", penalty: false, ownGoal: false },
+        { side: 'away', player: 'Jugador C', minute: "41'", penalty: false, ownGoal: false },
+        { side: 'home', player: 'Jugador B', minute: "58'", penalty: true, ownGoal: false }
+      ],
       pin: 'BOC 2-1'
     }
   },
@@ -196,11 +201,11 @@ const stadiums: Stadium[] = [
 const noMatch: StadiumMatch = {
   status: 'idle',
   competition: 'Liga Profesional',
-  kickoff: 'Sin partido',
-  score: 'Sin partido',
-  minute: 'Libre',
-  rival: '—',
-  description: 'Estadio sin actividad de juego en este momento.'
+  score: '',
+  minute: '',
+  rival: '',
+  goals: [],
+  description: 'Hoy no hay partido en este estadio.'
 }
 
 const REFRESH_MS = 60_000
@@ -212,32 +217,43 @@ const kickoffFormat = new Intl.DateTimeFormat('es-AR', {
   hourCycle: 'h23'
 })
 
-function toStadiumMatch(match: LiveMatch, stadium: Stadium): StadiumMatch {
-  const score =
-    match.status === 'upcoming' ? 'Por definir' : `${match.homeScore} - ${match.awayScore}`
+function toStadiumMatch(match: LiveMatch): StadiumMatch {
   const time = kickoffFormat.format(new Date(match.kickoff))
-  const pin =
-    match.status === 'upcoming'
-      ? `${match.homeAbbr}-${match.awayAbbr} ${time}`
-      : `${match.homeAbbr} ${match.homeScore}-${match.awayScore} ${match.awayAbbr}`
-  const description =
-    match.status === 'live'
-      ? `${match.homeTeam} recibe a ${match.awayTeam} en ${stadium.name}.`
-      : match.status === 'finished'
-        ? `Terminó ${match.homeTeam} ${score} ${match.awayTeam}.`
-        : `${match.homeTeam} recibe a ${match.awayTeam} más tarde.`
+  const upcoming = match.status === 'upcoming'
 
   return {
     status: match.status,
     competition: match.competition,
-    kickoff: `Hoy ${time}`,
-    score,
+    score: upcoming ? time : `${match.homeScore} - ${match.awayScore}`,
     minute: match.minute,
     home: match.homeTeam,
     rival: match.awayTeam,
-    description,
-    pin
+    goals: match.goals,
+    pin: upcoming
+      ? `${match.homeAbbr}-${match.awayAbbr} ${time}`
+      : `${match.homeAbbr} ${match.homeScore}-${match.awayScore} ${match.awayAbbr}`
   }
+}
+
+// Right-hand chip: the minute while live, otherwise a word that doesn't repeat the status tag
+function chipLabel(match: StadiumMatch) {
+  if (match.status === 'upcoming') return 'Hoy'
+  if (match.status === 'finished') return 'Final'
+  return match.minute
+}
+
+type ScorerLine = { player: string; minutes: string[] }
+
+// One line per scorer, e.g. "L. Flores 83' 90'+2'"; penalties and own goals are flagged
+function scorerLines(goals: Goal[], side: Goal['side']): ScorerLine[] {
+  const lines = new Map<string, ScorerLine>()
+  for (const goal of goals.filter((item) => item.side === side)) {
+    const player = goal.ownGoal ? `${goal.player} (e/c)` : goal.player
+    const line = lines.get(player) ?? { player, minutes: [] }
+    line.minutes.push(goal.penalty ? `${goal.minute} (p)` : goal.minute)
+    lines.set(player, line)
+  }
+  return [...lines.values()]
 }
 
 const filters: { key: Filter; label: string }[] = [
@@ -411,7 +427,7 @@ function App() {
         const match = liveMatches.find((liveMatch) => liveMatch.venueId === stadium.espnVenueId)
         return {
           ...stadium,
-          match: match ? toStadiumMatch(match, stadium) : (stadium.placeholder ?? noMatch)
+          match: match ? toStadiumMatch(match) : (stadium.placeholder ?? noMatch)
         }
       }),
     [liveMatches]
@@ -615,13 +631,18 @@ function App() {
                 <span className={`status-tag ${selectedMatch.status}`}>
                   {statusLabels[selectedMatch.status]}
                 </span>
-                <span className="minute-chip">{selectedMatch.minute}</span>
+                {selectedMatch.status !== 'idle' && (
+                  <span className="minute-chip">{chipLabel(selectedMatch)}</span>
+                )}
               </div>
 
               <div className="card-header">
                 <div>
-                  <p className="card-league">{selectedMatch.competition}</p>
+                  <p className="card-league">
+                    {selectedMatch.status === 'idle' ? selectedStadium.club : selectedMatch.competition}
+                  </p>
                   <h2>{selectedStadium.name}</h2>
+                  <p className="card-place">{selectedStadium.neighborhood}</p>
                 </div>
                 <button
                   type="button"
@@ -633,30 +654,43 @@ function App() {
                 </button>
               </div>
 
-              <div className="score-box">
-                <div>
-                  <span>Local</span>
-                  <strong>{selectedMatch.home ?? selectedStadium.club}</strong>
-                </div>
-                <strong className="score-value">{selectedMatch.score}</strong>
-                <div>
-                  <span>Rival</span>
-                  <strong>{selectedMatch.rival}</strong>
-                </div>
-              </div>
+              {selectedMatch.status === 'idle' ? (
+                <p className="description">{selectedMatch.description}</p>
+              ) : (
+                <>
+                  <div className="score-box">
+                    <div>
+                      <span>Local</span>
+                      <strong>{selectedMatch.home ?? selectedStadium.club}</strong>
+                    </div>
+                    <strong className="score-value">{selectedMatch.score}</strong>
+                    <div>
+                      <span>Rival</span>
+                      <strong>{selectedMatch.rival}</strong>
+                    </div>
+                  </div>
 
-              <div className="info-grid">
-                <div>
-                  <label>Horario</label>
-                  <strong>{selectedMatch.kickoff}</strong>
-                </div>
-                <div>
-                  <label>Barrio</label>
-                  <strong>{selectedStadium.neighborhood}</strong>
-                </div>
-              </div>
-
-              <p className="description">{selectedMatch.description}</p>
+                  {selectedMatch.status !== 'upcoming' &&
+                    (selectedMatch.goals.length > 0 ? (
+                      <div className="goals">
+                        {(['home', 'away'] as const).map((side) => (
+                          <ul key={side} className={`goal-list ${side}`}>
+                            {scorerLines(selectedMatch.goals, side).map((line) => (
+                              <li key={line.player}>
+                                <span className="goal-player">{line.player}</span>
+                                <span className="goal-minutes">{line.minutes.join(' ')}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="goals-empty">
+                        {selectedMatch.status === 'live' ? 'Sin goles todavía' : 'Sin goles'}
+                      </p>
+                    ))}
+                </>
+              )}
             </div>
           )}
 

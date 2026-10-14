@@ -3,6 +3,14 @@
 
 export type MatchStatus = 'live' | 'upcoming' | 'finished'
 
+export type Goal = {
+  side: 'home' | 'away'
+  player: string
+  minute: string
+  penalty: boolean
+  ownGoal: boolean
+}
+
 export type LiveMatch = {
   id: string
   venueId: string
@@ -16,6 +24,7 @@ export type LiveMatch = {
   minute: string
   kickoff: string
   competition: string
+  goals: Goal[]
 }
 
 export type MatchesResponse = {
@@ -29,6 +38,15 @@ type EspnCompetitor = {
   team: { id: string; abbreviation?: string; displayName: string; shortDisplayName: string }
 }
 
+type EspnDetail = {
+  scoringPlay?: boolean
+  penaltyKick?: boolean
+  ownGoal?: boolean
+  clock?: { displayValue: string }
+  team?: { id: string }
+  athletesInvolved?: { shortName?: string; displayName?: string }[]
+}
+
 type EspnEvent = {
   id: string
   date: string
@@ -36,7 +54,11 @@ type EspnEvent = {
     displayClock: string
     type: { name: string; state: 'pre' | 'in' | 'post' }
   }
-  competitions: { competitors: EspnCompetitor[]; venue?: { id: string } }[]
+  competitions: {
+    competitors: EspnCompetitor[]
+    venue?: { id: string }
+    details?: EspnDetail[]
+  }[]
 }
 
 type EspnScoreboard = {
@@ -96,7 +118,16 @@ function toMatch(event: EspnEvent, competition: string): LiveMatch | null {
     awayScore: away.score ?? '0',
     minute,
     kickoff: event.date,
-    competition
+    competition,
+    goals: (event.competitions[0]?.details ?? [])
+      .filter((detail) => detail.scoringPlay)
+      .map((detail) => ({
+        side: detail.team?.id === away.team.id ? 'away' : 'home',
+        player: detail.athletesInvolved?.[0]?.shortName ?? detail.athletesInvolved?.[0]?.displayName ?? '',
+        minute: detail.clock?.displayValue ?? '',
+        penalty: Boolean(detail.penaltyKick),
+        ownGoal: Boolean(detail.ownGoal)
+      }))
   }
 }
 

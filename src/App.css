@@ -327,8 +327,7 @@
 }
 
 .card-topline,
-.card-header,
-.info-grid {
+.card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -397,6 +396,13 @@
   text-transform: uppercase;
 }
 
+.card-place {
+  margin: 4px 0 0;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
 .info-card h2 {
   margin: 0;
   color: var(--text);
@@ -461,36 +467,62 @@
   font-variant-numeric: tabular-nums;
 }
 
-.info-grid {
-  margin-top: 8px;
-  gap: 8px;
+/* Scorers: home on the left, away on the right, one line per player */
+.goals {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 0 4px;
 }
 
-.info-grid div {
-  flex: 1;
-  padding: 12px 14px;
-  border-radius: var(--radius);
-  background: var(--surface-raised);
+.goal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.info-grid label {
-  display: block;
-  margin-bottom: 2px;
-  color: var(--text-muted);
-  font-size: 0.64rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+.goal-list.away {
+  align-items: flex-end;
+  text-align: right;
 }
 
-.info-grid strong {
+.goal-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 6px;
+  font-size: 0.82rem;
+  line-height: 1.3;
+}
+
+.goal-list.away li {
+  justify-content: flex-end;
+}
+
+.goal-player {
   color: var(--text);
-  font-size: 0.9rem;
   font-weight: 700;
+}
+
+.goal-minutes {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.goals-empty {
+  margin: 12px 0 0;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  text-align: center;
 }
 
 .description {
-  margin: 14px 0 0;
+  margin: 0;
   color: var(--text-muted);
   line-height: 1.55;
   font-size: 0.88rem;
