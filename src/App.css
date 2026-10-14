@@ -150,7 +150,47 @@
   width: 100%;
   min-height: 100vh;
   overflow: hidden;
-  background: #0b2139;
+  background: linear-gradient(180deg, #071c2f 0%, #0a1f38 100%);
+}
+
+.map-surface::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 65%, rgba(71, 200, 255, 0.16), transparent 35%);
+  pointer-events: none;
+}
+
+.map-plate {
+  position: absolute;
+  inset: 8% 4% 8% 4%;
+  border-radius: 22px;
+  box-shadow: 0 40px 80px rgba(2, 9, 17, 0.42), inset 0 0 0 1px rgba(146, 207, 255, 0.18);
+  overflow: hidden;
+  transform: perspective(1900px) rotateX(56deg) rotateZ(-10deg) scale(1.16);
+  transform-origin: center center;
+  background: rgba(15, 34, 52, 0.3);
+}
+
+.map-plate::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 25%);
+  pointer-events: none;
+  z-index: 20;
+}
+
+.map-plate::after {
+  content: '';
+  position: absolute;
+  inset: auto 8% -6% 8%;
+  height: 22%;
+  background: linear-gradient(180deg, rgba(5, 15, 24, 0.26), rgba(5, 15, 24, 0.62));
+  border-radius: 50%;
+  transform: skewX(-14deg);
+  filter: blur(24px);
+  pointer-events: none;
 }
 
 .leaflet-map {
@@ -159,15 +199,12 @@
   width: 100%;
   height: 100%;
   z-index: 0;
-  transform: perspective(1400px) rotateX(52deg) rotateZ(-9deg) scale(1.15);
-  transform-origin: center center;
-  filter: saturate(1.08) contrast(1.1) brightness(0.92);
+  filter: saturate(0.96) contrast(1.12) brightness(0.92);
 }
 
 .leaflet-container {
   background: #0b2139;
-  filter: saturate(1.05) contrast(1.08) brightness(0.95);
-  border-radius: 14px;
+  border-radius: 22px;
 }
 
 .leaflet-control-zoom {
@@ -175,7 +212,7 @@
 }
 
 .leaflet-tile-pane {
-  filter: saturate(0.8) brightness(0.8) contrast(1.2);
+  filter: saturate(0.8) brightness(0.9) contrast(1.1);
 }
 
 .leaflet-pane,

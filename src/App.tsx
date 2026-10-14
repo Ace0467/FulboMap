@@ -182,22 +182,23 @@ function App() {
 
       <main className="map-stage">
         <div className="map-surface">
-          <MapContainer
-            center={[-34.615, -58.43]}
-            zoom={11}
-            minZoom={10}
-            maxZoom={15}
-            scrollWheelZoom
-            zoomControl
-            attributionControl={false}
-            className="leaflet-map"
-          >
-            <TileLayer
-              attribution='&copy; OpenStreetMap contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
+          <div className="map-plate">
+            <MapContainer
+              center={[-34.615, -58.43]}
+              zoom={11}
+              minZoom={10}
+              maxZoom={15}
+              scrollWheelZoom
+              zoomControl
+              attributionControl={false}
+              className="leaflet-map"
+            >
+              <TileLayer
+                attribution='&copy; OpenStreetMap contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
 
-            {stadiums.map((stadium) => {
+              {stadiums.map((stadium) => {
               const isVisible = visibleStadiums.some((item) => item.id === stadium.id)
               if (!isVisible) return null
 
@@ -223,7 +224,8 @@ function App() {
                 />
               )
             })}
-          </MapContainer>
+            </MapContainer>
+          </div>
 
           {detailOpen && (
             <div className="info-card">
