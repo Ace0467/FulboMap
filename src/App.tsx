@@ -61,13 +61,13 @@ const stadiums: Stadium[] = [
       homeScore: '2',
       awayScore: '1',
       minute: '67’',
-      rival: 'Rival',
+      rival: 'River Plate',
       goals: [
-        { side: 'home', player: 'Jugador A', minute: "23'", penalty: false, ownGoal: false },
-        { side: 'away', player: 'Jugador C', minute: "41'", penalty: false, ownGoal: false },
-        { side: 'home', player: 'Jugador B', minute: "58'", penalty: true, ownGoal: false }
+        { side: 'home', player: 'M. Merentiel', minute: "23'", penalty: false, ownGoal: false },
+        { side: 'away', player: 'S. Driussi', minute: "41'", penalty: false, ownGoal: false },
+        { side: 'home', player: 'S. Villa', minute: "58'", penalty: true, ownGoal: false }
       ],
-      pin: 'BOC 2-1'
+      pin: 'BOC 2-1 RIV'
     }
   },
   {
