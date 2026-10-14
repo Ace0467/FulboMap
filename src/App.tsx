@@ -14,6 +14,8 @@ type StadiumMatch = {
   kickoff: string
   score: string
   minute: string
+  // Defaults to the stadium's club; differs for cup matches at a neutral venue
+  home?: string
   rival: string
   description: string
 }
@@ -24,7 +26,7 @@ type Stadium = {
   neighborhood: string
   club: string
   position: [number, number]
-  espnTeamId: string
+  espnVenueId: string
   // Shown when the club has no real match today
   placeholder?: StadiumMatch
 }
@@ -38,7 +40,7 @@ const stadiums: Stadium[] = [
     neighborhood: 'La Boca',
     club: 'Boca Juniors',
     position: [-58.3649163, -34.6355171],
-    espnTeamId: '5',
+    espnVenueId: '5348',
     placeholder: {
       status: 'live',
       competition: 'Partido de ejemplo',
@@ -46,7 +48,7 @@ const stadiums: Stadium[] = [
       score: '2 - 1',
       minute: '67’',
       rival: 'Rival',
-      description: 'Resultado de ejemplo: Boca no juega de local hoy.'
+      description: 'Resultado de ejemplo: hoy no hay partido en La Bombonera.'
     }
   },
   {
@@ -55,7 +57,7 @@ const stadiums: Stadium[] = [
     neighborhood: 'Belgrano',
     club: 'River Plate',
     position: [-58.4497385, -34.5452932],
-    espnTeamId: '16'
+    espnVenueId: '10786'
   },
   {
     id: 'gasometro',
@@ -63,7 +65,7 @@ const stadiums: Stadium[] = [
     neighborhood: 'Flores',
     club: 'San Lorenzo',
     position: [-58.4401364, -34.6520908],
-    espnTeamId: '18'
+    espnVenueId: '10791'
   },
   {
     id: 'amalfitani',
@@ -71,7 +73,7 @@ const stadiums: Stadium[] = [
     neighborhood: 'Liniers',
     club: 'Vélez Sarsfield',
     position: [-58.5206788, -34.6353382],
-    espnTeamId: '21'
+    espnVenueId: '10761'
   },
   {
     id: 'duco',
@@ -79,7 +81,7 @@ const stadiums: Stadium[] = [
     neighborhood: 'Parque Patricios',
     club: 'Huracán',
     position: [-58.3965055, -34.6434694],
-    espnTeamId: '10'
+    espnVenueId: '10783'
   },
   {
     id: 'maradona',
@@ -87,7 +89,7 @@ const stadiums: Stadium[] = [
     neighborhood: 'La Paternal',
     club: 'Argentinos Juniors',
     position: [-58.4726194, -34.6061215],
-    espnTeamId: '3'
+    espnVenueId: '10785'
   }
 ]
 
@@ -126,6 +128,7 @@ function toStadiumMatch(match: LiveMatch, stadium: Stadium): StadiumMatch {
     kickoff: `Hoy ${kickoffFormat.format(new Date(match.kickoff))}`,
     score,
     minute: match.minute,
+    home: match.homeTeam,
     rival: match.awayTeam,
     description
   }
@@ -244,7 +247,7 @@ function App() {
   const stadiumViews = useMemo<StadiumView[]>(
     () =>
       stadiums.map((stadium) => {
-        const match = liveMatches.find((liveMatch) => liveMatch.homeTeamId === stadium.espnTeamId)
+        const match = liveMatches.find((liveMatch) => liveMatch.venueId === stadium.espnVenueId)
         return {
           ...stadium,
           match: match ? toStadiumMatch(match, stadium) : (stadium.placeholder ?? noMatch)
@@ -444,7 +447,7 @@ function App() {
               <div className="score-box">
                 <div>
                   <span>Local</span>
-                  <strong>{selectedStadium.club}</strong>
+                  <strong>{selectedMatch.home ?? selectedStadium.club}</strong>
                 </div>
                 <strong className="score-value">{selectedMatch.score}</strong>
                 <div>

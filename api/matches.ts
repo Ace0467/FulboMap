@@ -1,11 +1,11 @@
-// Today's Liga Profesional matches, read from ESPN's public (undocumented) scoreboard.
+// Today's matches (league and cups), read from ESPN's public (undocumented) scoreboard.
 // Swapping the data source only requires changing this file.
 
 export type MatchStatus = 'live' | 'upcoming' | 'finished'
 
 export type LiveMatch = {
   id: string
-  homeTeamId: string
+  venueId: string
   homeTeam: string
   awayTeam: string
   status: MatchStatus
@@ -14,7 +14,6 @@ export type LiveMatch = {
   minute: string
   kickoff: string
   competition: string
-  venue: string
 }
 
 export type MatchesResponse = {
@@ -35,14 +34,20 @@ type EspnEvent = {
     displayClock: string
     type: { name: string; state: 'pre' | 'in' | 'post' }
   }
-  competitions: { competitors: EspnCompetitor[]; venue?: { fullName: string } }[]
+  competitions: { competitors: EspnCompetitor[]; venue?: { id: string } }[]
 }
 
 type EspnScoreboard = {
   events?: EspnEvent[]
 }
 
-const SCOREBOARD_URL = 'https://site.api.espn.com/apis/site/v2/sports/soccer/arg.1/scoreboard'
+const SCOREBOARD_URL = 'https://site.api.espn.com/apis/site/v2/sports/soccer'
+const LEAGUES = [
+  { slug: 'arg.1', label: 'Liga Profesional' },
+  { slug: 'arg.copa', label: 'Copa Argentina' },
+  { slug: 'conmebol.libertadores', label: 'Copa Libertadores' },
+  { slug: 'conmebol.sudamericana', label: 'Copa Sudamericana' }
+]
 const TIME_ZONE = 'America/Argentina/Buenos_Aires'
 const DAY_MS = 24 * 60 * 60 * 1000
 
@@ -51,11 +56,12 @@ function argentinaDate(date: Date) {
   return new Intl.DateTimeFormat('en-CA', { timeZone: TIME_ZONE }).format(date)
 }
 
-function toMatch(event: EspnEvent): LiveMatch | null {
+function toMatch(event: EspnEvent, competition: string): LiveMatch | null {
+  const venueId = event.competitions[0]?.venue?.id
   const competitors = event.competitions[0]?.competitors ?? []
   const home = competitors.find((competitor) => competitor.homeAway === 'home')
   const away = competitors.find((competitor) => competitor.homeAway === 'away')
-  if (!home || !away) return null
+  if (!venueId || !home || !away) return null
 
   const { state, name } = event.status.type
   const status: MatchStatus = state === 'in' ? 'live' : state === 'post' ? 'finished' : 'upcoming'
@@ -70,7 +76,7 @@ function toMatch(event: EspnEvent): LiveMatch | null {
 
   return {
     id: event.id,
-    homeTeamId: home.team.id,
+    venueId,
     homeTeam: home.team.shortDisplayName.trim(),
     awayTeam: away.team.shortDisplayName.trim(),
     status,
@@ -78,8 +84,7 @@ function toMatch(event: EspnEvent): LiveMatch | null {
     awayScore: away.score ?? '0',
     minute,
     kickoff: event.date,
-    competition: 'Liga Profesional',
-    venue: event.competitions[0]?.venue?.fullName ?? ''
+    competition
   }
 }
 
@@ -91,19 +96,26 @@ export async function fetchTodayMatches(now = new Date()): Promise<LiveMatch[]> 
     argentinaDate(new Date(now.getTime() + offset * DAY_MS)).replaceAll('-', '')
   )
 
-  const boards = await Promise.all(
+  const requests = LEAGUES.flatMap((league) =>
     days.map(async (day) => {
-      const response = await fetch(`${SCOREBOARD_URL}?dates=${day}`)
-      if (!response.ok) throw new Error(`ESPN ${response.status} for ${day}`)
-      return (await response.json()) as EspnScoreboard
+      const response = await fetch(`${SCOREBOARD_URL}/${league.slug}/scoreboard?dates=${day}`)
+      if (!response.ok) throw new Error(`ESPN ${response.status} for ${league.slug} ${day}`)
+      return { league, board: (await response.json()) as EspnScoreboard }
     })
   )
+  // One competition failing shouldn't hide the others.
+  const results = await Promise.allSettled(requests)
+  const failures = results.filter((result) => result.status === 'rejected')
+  if (failures.length === results.length) throw failures[0].reason
+  failures.forEach((failure) => console.warn(failure.reason))
 
   const matches = new Map<string, LiveMatch>()
-  for (const board of boards) {
+  for (const result of results) {
+    if (result.status !== 'fulfilled') continue
+    const { league, board } = result.value
     for (const event of board.events ?? []) {
       if (argentinaDate(new Date(event.date)) !== today) continue
-      const match = toMatch(event)
+      const match = toMatch(event, league.label)
       if (match) matches.set(match.id, match)
     }
   }
