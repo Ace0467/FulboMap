@@ -676,6 +676,64 @@
   font-size: 0.88rem;
 }
 
+/* The club's next matches, revealed by dragging the phone sheet up */
+.next-matches {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.next-title {
+  margin: 0 0 8px;
+  color: var(--text-muted);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.next-matches ul {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.next-matches li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.84rem;
+}
+
+.next-when {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.next-rival {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text);
+  font-weight: 700;
+  text-align: right;
+}
+
+/* L / V: home or away */
+.next-side {
+  padding: 0 5px;
+  border-radius: 4px;
+  background: var(--surface-raised);
+  color: var(--text-muted);
+  font-size: 0.6rem;
+  font-weight: 800;
+}
+
 /* Legend ---------------------------------------------------------------- */
 
 /* The attribution (i) button sits at the bottom-left corner; the legend starts after it */

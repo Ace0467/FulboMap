@@ -1093,6 +1093,32 @@ function withArticle(venue: string) {
   return `el ${name}`
 }
 
+type NextMatch = { id: string; when: string; rival: string; home: boolean; competition: string }
+
+// The club's next upcoming matches after the one on the card (what the expanded sheet lists)
+function nextClubMatches(stadium: Stadium, matches: LiveMatch[], shownId: string | undefined, now: number): NextMatch[] {
+  return matches
+    .filter(
+      (match) =>
+        match.status === 'upcoming' &&
+        match.id !== shownId &&
+        (match.homeTeamId === stadium.espnTeamId || match.awayTeamId === stadium.espnTeamId)
+    )
+    .sort(byKickoff)
+    .slice(0, 3)
+    .map((match) => {
+      const kickoff = new Date(match.kickoff)
+      const home = match.homeTeamId === stadium.espnTeamId
+      return {
+        id: match.id,
+        when: `${dayLabel(kickoff, now)} · ${kickoffFormat.format(kickoff)}`,
+        rival: home ? match.awayTeam : match.homeTeam,
+        home,
+        competition: match.competition
+      }
+    })
+}
+
 // Shown between the two scores: the running minute, the kickoff time, or "Final"
 function clockLabel(match: StadiumMatch) {
   if (match.status === 'upcoming') return match.kickoffTime ?? ''
@@ -1478,6 +1504,10 @@ function App() {
   const selectedStadium =
     visibleStadiums.find((stadium) => stadium.id === selectedId) ?? visibleStadiums[0] ?? stadiumViews[0]
   const selectedMatch = selectedStadium.match
+  const nextMatches = useMemo(
+    () => nextClubMatches(selectedStadium, liveMatches, selectedMatch.id, fetchedAt),
+    [selectedStadium, liveMatches, selectedMatch.id, fetchedAt]
+  )
 
   useEffect(() => {
     const query = window.matchMedia('(max-width: 780px)')
@@ -1495,7 +1525,7 @@ function App() {
       ? box.getBoundingClientRect().bottom - card.getBoundingClientRect().top + 16
       : card.offsetHeight
     setPeekOffset(Math.max(0, card.offsetHeight - visible))
-  }, [compact, detailOpen, selectedId, selectedMatch])
+  }, [compact, detailOpen, selectedId, selectedMatch, nextMatches])
 
   const sheetY = dragY ?? (sheetMode === 'full' ? 0 : peekOffset)
 
@@ -1509,7 +1539,9 @@ function App() {
     const start = dragStart.current
     if (!start || !cardRef.current) return
     const y = start.base + event.clientY - start.y
-    setDragY(Math.min(Math.max(y, 0), cardRef.current.offsetHeight))
+    // Past the top, give a little with resistance so the gesture still feels answered
+    const resisted = y < 0 ? Math.max(y * 0.3, -40) : y
+    setDragY(Math.min(resisted, cardRef.current.offsetHeight))
   }
 
   const onSheetPointerUp = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -1679,6 +1711,24 @@ function App() {
                       </p>
                     ))}
                 </>
+              )}
+
+              {/* Phones only: what the sheet reveals when dragged up */}
+              {compact && nextMatches.length > 0 && (
+                <div className="next-matches">
+                  <p className="next-title">Próximos partidos</p>
+                  <ul>
+                    {nextMatches.map((match) => (
+                      <li key={match.id}>
+                        <span className="next-when">{match.when}</span>
+                        <span className="next-rival">
+                          {match.rival}
+                          <span className="next-side">{match.home ? 'L' : 'V'}</span>
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               )}
             </div>
           )}
