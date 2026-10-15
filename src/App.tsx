@@ -1151,7 +1151,10 @@ function App() {
                 </div>
               </div>
 
-              <span className={`status-tag ${selectedMatch.status}`}>
+              {/* With a match, the status is a tab joined to the score box */}
+              <span
+                className={`status-tag ${selectedMatch.status}${selectedMatch.status === 'idle' ? '' : ' tab'}`}
+              >
                 {statusLabel(selectedMatch)}
               </span>
 
