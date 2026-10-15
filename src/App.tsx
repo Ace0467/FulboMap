@@ -765,11 +765,7 @@ function App() {
                     {selectedMatch.status === 'idle' ? selectedStadium.club : selectedMatch.competition}
                   </p>
                   <h2>{selectedStadium.name}</h2>
-                  <p className="card-place">
-                    {selectedMatch.elsewhere
-                      ? `${selectedMatch.status === 'finished' ? 'Se jugó' : 'Se juega'} en ${withArticle(selectedMatch.elsewhere)}`
-                      : selectedStadium.neighborhood}
-                  </p>
+                  <p className="card-place">{selectedStadium.neighborhood}</p>
                 </div>
               </div>
 
@@ -791,6 +787,12 @@ function App() {
                     </span>
                     <strong className="score-value">{selectedMatch.awayScore}</strong>
                     <strong className="score-team away">{selectedMatch.rival}</strong>
+                    {selectedMatch.elsewhere && (
+                      <span className="score-venue">
+                        {selectedMatch.status === 'finished' ? 'Se jugó' : 'Se juega'} en{' '}
+                        {withArticle(selectedMatch.elsewhere)}
+                      </span>
+                    )}
                   </div>
 
                   {selectedMatch.status !== 'upcoming' &&

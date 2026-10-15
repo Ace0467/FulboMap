@@ -456,6 +456,16 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Where the match is played, when it isn't this ground: a full-width line under the score */
+.score-venue {
+  grid-column: 1 / -1;
+  margin-top: 8px;
+  color: var(--text-muted);
+  font-size: 0.74rem;
+  font-weight: 600;
+  text-align: center;
+}
+
 /* The match clock: the most prominent thing after the score while live */
 .score-clock {
   min-width: 54px;
