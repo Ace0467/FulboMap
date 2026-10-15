@@ -605,7 +605,7 @@ const stadiums: Stadium[] = [
     position: [-57.58241, -38.0179],
     espnVenueId: '10781',
     espnTeamId: '9739',
-    kit: 'linear-gradient(90deg, #138a3c 0 50%, #f5c400 50%)'
+    kit: 'linear-gradient(90deg, #138a3c 0% 20%, #f5c400 20% 40%, #138a3c 40% 60%, #f5c400 60% 80%, #138a3c 80% 100%)'
   },
   {
     id: 'jose-fierro',
@@ -645,7 +645,8 @@ const stadiums: Stadium[] = [
     position: [-64.34768, -33.11485],
     espnVenueId: '8203',
     espnTeamId: '19685',
-    kit: 'linear-gradient(180deg, #6cb4e4 0 40%, #ffffff 40% 60%, #6cb4e4 60%)'
+    // Sky blue with a white disc outlined in black
+    kit: 'radial-gradient(circle closest-side, #ffffff 0 40%, #111111 41% 46%, #6cb4e4 47%)'
   },
   {
     id: 'legrotaglie',
@@ -735,7 +736,7 @@ const stadiums: Stadium[] = [
     position: [-61.37866, -35.6321],
     espnVenueId: '7454',
     espnTeamId: '13913',
-    kit: 'radial-gradient(circle closest-side, transparent 72%, #d6111e 75%), #138a3c'
+    kit: 'linear-gradient(90deg, #138a3c 0% 20%, #d6111e 20% 40%, #138a3c 40% 60%, #d6111e 60% 80%, #138a3c 80% 100%)'
   },
   {
     id: 'nuevo-monumental-rafaela',
@@ -805,7 +806,8 @@ const stadiums: Stadium[] = [
     position: [-68.79341, -32.98321],
     espnVenueId: '8432',
     espnTeamId: '11978',
-    kit: 'linear-gradient(45deg, #ffffff 0 40%, #d6111e 40% 60%, #ffffff 60%)'
+    // Black, white and red vertical thirds
+    kit: 'linear-gradient(90deg, #111111 0 33.3%, #ffffff 33.3% 66.7%, #d6111e 66.7%)'
   },
   {
     id: '23-de-agosto',
@@ -845,7 +847,7 @@ const stadiums: Stadium[] = [
     position: [-64.27636, -27.792797],
     espnVenueId: '8656',
     espnTeamId: '18284',
-    kit: 'linear-gradient(180deg, #d6111e 0 50%, #1d4fa0 50%)'
+    kit: 'linear-gradient(180deg, #1d4fa0 0 36%, #d6111e 36% 64%, #1d4fa0 64%)'
   },
   {
     id: 'castiglione',
@@ -935,7 +937,8 @@ const stadiums: Stadium[] = [
     position: [-58.91955, -34.46896],
     espnVenueId: '6131',
     espnTeamId: '18844',
-    kit: 'linear-gradient(180deg, #ffffff 0 40%, #111111 40% 60%, #ffffff 60%)'
+    // White with a black vertical stripe a third wide
+    kit: 'linear-gradient(90deg, #ffffff 0 33.3%, #111111 33.3% 66.7%, #ffffff 66.7%)'
   },
   {
     id: 'villa-dalmine',
