@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import type { PointerEvent as ReactPointerEvent } from 'react'
 import * as maplibregl from 'maplibre-gl'
 import mapLibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import 'maplibre-gl/dist/maplibre-gl.css'
@@ -14,6 +15,8 @@ type StadiumStatus = 'live' | 'upcoming' | 'finished' | 'idle'
 type Filter = 'todos' | 'en vivo' | 'próximos' | 'finalizados'
 
 type StadiumMatch = {
+  // ESPN event id; absent for the placeholder and "no match"
+  id?: string
   status: StadiumStatus
   competition: string
   homeScore?: string
@@ -1053,6 +1056,7 @@ function toStadiumMatch(match: LiveMatch, stadium: Stadium, now: number): Stadiu
     minute: match.minute,
     home: match.homeTeam,
     rival: match.awayTeam,
+    id: match.id,
     goals: match.goals,
     tv: match.status === 'finished' ? undefined : match.tv,
     // Only matches with a result get a label on the map; upcoming ones show it on the card
@@ -1192,6 +1196,13 @@ function stadiumBounds() {
 
 const isCompactScreen = () => window.matchMedia('(max-width: 780px)').matches
 
+// Bottom sheet on phones: 'peek' shows the card down to the score box, 'full' shows everything
+type SheetMode = 'peek' | 'full'
+// Dragging this far below the peek position closes the sheet
+const SHEET_CLOSE_DISTANCE = 80
+// px/ms; a quicker flick than this decides the direction regardless of where the sheet stops
+const SHEET_FLICK_SPEED = 0.5
+
 function applyLpfMapPalette(map: maplibregl.Map) {
   const setPaint = (layerId: string, property: string, value: string | number | boolean) => {
     if (map.getLayer(layerId)) {
@@ -1261,6 +1272,14 @@ function App() {
   const [activeFilter, setActiveFilter] = useState<Filter>('todos')
   const [selectedId, setSelectedId] = useState('bombonera')
   const [detailOpen, setDetailOpen] = useState(() => !isCompactScreen())
+  const [compact, setCompact] = useState(isCompactScreen)
+  const cardRef = useRef<HTMLDivElement | null>(null)
+  const [sheetMode, setSheetMode] = useState<SheetMode>('peek')
+  // How far down the sheet sits when peeking, measured from the rendered card
+  const [peekOffset, setPeekOffset] = useState(0)
+  // Live position while the finger is down; null when not dragging
+  const [dragY, setDragY] = useState<number | null>(null)
+  const dragStart = useRef<{ y: number; base: number; time: number } | null>(null)
   const [markersReady, setMarkersReady] = useState(false)
   const [liveMatches, setLiveMatches] = useState<LiveMatch[]>([])
   const [loadingMatches, setLoadingMatches] = useState(false)
@@ -1304,7 +1323,12 @@ function App() {
     [liveMatches, fetchedAt]
   )
 
-  const liveCount = stadiumViews.filter((stadium) => stadium.match.status === 'live').length
+  // A match can show on two grounds (its venue and the away club's), so count matches, not grounds
+  const liveCount = new Set(
+    stadiumViews
+      .filter((stadium) => stadium.match.status === 'live')
+      .map((stadium) => stadium.match.id ?? stadium.id)
+  ).size
 
   const visibleStadiums = useMemo(() => {
     if (activeFilter === 'todos') return stadiumViews
@@ -1392,6 +1416,8 @@ function App() {
         markerElement.addEventListener('click', () => {
           setSelectedId(stadium.id)
           setDetailOpen(true)
+          // On phones a newly picked stadium opens peeking
+          setSheetMode('peek')
           map.flyTo({
             center: stadium.position,
             zoom: 15.5,
@@ -1453,6 +1479,61 @@ function App() {
     visibleStadiums.find((stadium) => stadium.id === selectedId) ?? visibleStadiums[0] ?? stadiumViews[0]
   const selectedMatch = selectedStadium.match
 
+  useEffect(() => {
+    const query = window.matchMedia('(max-width: 780px)')
+    const update = () => setCompact(query.matches)
+    query.addEventListener('change', update)
+    return () => query.removeEventListener('change', update)
+  }, [])
+
+  // Peek shows the card down to the score box; everything below it slides off screen
+  useLayoutEffect(() => {
+    const card = cardRef.current
+    if (!compact || !detailOpen || !card) return
+    const box = card.querySelector('.score-box') ?? card.querySelector('.description')
+    const visible = box
+      ? box.getBoundingClientRect().bottom - card.getBoundingClientRect().top + 16
+      : card.offsetHeight
+    setPeekOffset(Math.max(0, card.offsetHeight - visible))
+  }, [compact, detailOpen, selectedId, selectedMatch])
+
+  const sheetY = dragY ?? (sheetMode === 'full' ? 0 : peekOffset)
+
+  const onSheetPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (!compact || (event.target as HTMLElement).closest('button')) return
+    dragStart.current = { y: event.clientY, base: sheetY, time: performance.now() }
+    event.currentTarget.setPointerCapture(event.pointerId)
+  }
+
+  const onSheetPointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const start = dragStart.current
+    if (!start || !cardRef.current) return
+    const y = start.base + event.clientY - start.y
+    setDragY(Math.min(Math.max(y, 0), cardRef.current.offsetHeight))
+  }
+
+  const onSheetPointerUp = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const start = dragStart.current
+    dragStart.current = null
+    if (!start) return
+    const moved = event.clientY - start.y
+    const speed = moved / Math.max(performance.now() - start.time, 1)
+    const end = start.base + moved
+    setDragY(null)
+
+    // A tap toggles between peek and full
+    if (Math.abs(moved) < 6) {
+      setSheetMode((mode) => (mode === 'full' ? 'peek' : 'full'))
+      return
+    }
+    if (end > peekOffset + SHEET_CLOSE_DISTANCE || (speed > SHEET_FLICK_SPEED && start.base >= peekOffset)) {
+      setDetailOpen(false)
+      setSheetMode('peek')
+    } else if (speed < -SHEET_FLICK_SPEED) setSheetMode('full')
+    else if (speed > SHEET_FLICK_SPEED) setSheetMode('peek')
+    else setSheetMode(end < peekOffset / 2 ? 'full' : 'peek')
+  }
+
   return (
     <div className="app-shell">
       <header className="hud">
@@ -1499,7 +1580,16 @@ function App() {
           <div ref={mapContainerRef} className="map-canvas" />
 
           {detailOpen && (
-            <div className="info-card">
+            <div
+              ref={cardRef}
+              className={`info-card${dragY === null ? '' : ' dragging'}`}
+              style={compact ? { transform: `translateY(${sheetY}px)` } : undefined}
+              onPointerDown={onSheetPointerDown}
+              onPointerMove={onSheetPointerMove}
+              onPointerUp={onSheetPointerUp}
+              onPointerCancel={onSheetPointerUp}
+            >
+              <div className="sheet-handle" aria-hidden="true" />
               <div className="card-topline">
                 <span className="card-league">
                   {selectedMatch.status === 'idle' ? '' : selectedMatch.competition}

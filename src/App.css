@@ -301,6 +301,11 @@
 
 /* Detail card ----------------------------------------------------------- */
 
+/* Only shown on phones, where the card is a draggable bottom sheet */
+.sheet-handle {
+  display: none;
+}
+
 .info-card {
   position: absolute;
   right: 18px;
@@ -766,13 +771,40 @@
   }
 
   /* Leaves the attribution (i) button visible under the sheet */
+  /* Bottom sheet, like Google Maps: drag the card up to see everything, down to close it */
   .info-card {
-    left: 12px;
-    right: 12px;
-    bottom: 40px;
+    left: 0;
+    right: 0;
+    bottom: 0;
     width: auto;
-    max-height: 58vh;
-    overflow-y: auto;
+    max-height: 85vh;
+    padding-bottom: calc(18px + env(safe-area-inset-bottom));
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    border-bottom: none;
+    touch-action: none;
+    user-select: none;
+    animation: none;
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .info-card.dragging {
+    transition: none;
+  }
+
+  .sheet-handle {
+    display: block;
+    width: 38px;
+    height: 5px;
+    margin: -8px auto 10px;
+    border-radius: 999px;
+    background: var(--text-muted);
+    opacity: 0.5;
+  }
+
+  /* The sheet covers the bottom edge, so keep the map credits visible under the header */
+  .maplibregl-ctrl-bottom-left {
+    top: 164px;
+    bottom: auto;
   }
 
   .info-card ~ .map-legend {
