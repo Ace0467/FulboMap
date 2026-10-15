@@ -270,7 +270,7 @@ const stadiums: Stadium[] = [
     position: [-58.2865, -34.8218],
     espnVenueId: '5554',
     espnTeamId: '8950',
-    kit: 'linear-gradient(180deg, #1a8a3a 0 36%, #f5d300 36% 64%, #1a8a3a 64%)'
+    kit: 'linear-gradient(135deg, #1a8a3a 0 36%, #f5d300 36% 64%, #1a8a3a 64%)'
   },
   {
     id: 'dellagiovanna',
@@ -370,7 +370,7 @@ const stadiums: Stadium[] = [
     position: [-58.252, -34.7418],
     espnVenueId: '5351',
     espnTeamId: '2741',
-    kit: 'linear-gradient(135deg, #ffffff 0 42%, #1b2f6b 42% 58%, #ffffff 58%)'
+    kit: 'linear-gradient(135deg, #ffffff 0 38%, #13214d 38% 62%, #ffffff 62%)'
   },
   {
     id: 'midland',
