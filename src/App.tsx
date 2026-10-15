@@ -340,7 +340,7 @@ const stadiums: Stadium[] = [
     position: [-58.4, -34.7824],
     espnVenueId: '10978',
     espnTeamId: '10162',
-    kit: '#7cc5ee'
+    kit: 'linear-gradient(135deg, #ffffff 0 36%, #7cc5ee 36% 64%, #ffffff 64%)'
   },
   {
     id: 'libertarios',
@@ -400,7 +400,7 @@ const stadiums: Stadium[] = [
     position: [-58.6318, -34.662],
     espnVenueId: '10568',
     espnTeamId: '10154',
-    kit: 'radial-gradient(circle closest-side, transparent 72%, #d6111e 75%), #ffffff'
+    kit: 'linear-gradient(180deg, #ffffff 0 36%, #d6111e 36% 64%, #ffffff 64%)'
   },
   {
     id: 'malvinas',
@@ -560,7 +560,8 @@ const stadiums: Stadium[] = [
     position: [-58.3798016, -34.8064121],
     espnVenueId: '10859',
     espnTeamId: '10147',
-    kit: 'conic-gradient(at 50% 82%, #111111 0 22deg, #d6111e 22deg 44deg, #111111 44deg 316deg, #d6111e 316deg 338deg, #111111 338deg)'
+    // Red, black and sky-blue triangles hanging from the top, as on the crest
+    kit: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Crect width='20' height='20' fill='%23111'/%3E%3Cpath fill='%23e41b1b' d='M0 0h20L10 19z'/%3E%3Cpath fill='%23111' d='M3.5 0h13L10 13.5z'/%3E%3Cpath fill='%235bc8f5' d='M5 1h10L10 9.5z'/%3E%3C/svg%3E\") center / cover no-repeat"
   },
   {
     id: 'brieva',
@@ -590,7 +591,8 @@ const stadiums: Stadium[] = [
     position: [-58.5172, -34.738],
     espnVenueId: '5698',
     espnTeamId: '17703',
-    kit: 'linear-gradient(180deg, #1f5fbf 0 38%, #138a3c 38% 46%, #ffffff 46% 54%, #d6111e 54% 62%, #1f5fbf 62%)'
+    // The Italian flag
+    kit: 'linear-gradient(90deg, #009246 0 33.4%, #ffffff 33.4% 66.6%, #ce2b37 66.6%)'
   }
 ]
 
