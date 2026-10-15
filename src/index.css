@@ -3,8 +3,8 @@
 :root {
   /* Surfaces: flat, neutral, near-black */
   --bg: #0e0e11;
-  --surface: rgba(20, 20, 24, 0.94);
-  --surface-raised: #232329;
+  --surface: rgba(17, 17, 20, 0.96);
+  --surface-raised: #2c2c34;
   --border: rgba(255, 255, 255, 0.08);
 
   /* Text */
