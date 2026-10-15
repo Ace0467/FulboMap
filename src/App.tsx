@@ -270,7 +270,7 @@ const stadiums: Stadium[] = [
     position: [-58.2865, -34.8218],
     espnVenueId: '5554',
     espnTeamId: '8950',
-    kit: 'radial-gradient(circle closest-side, transparent 72%, #1a8a3a 75%), #f5d300'
+    kit: 'linear-gradient(180deg, #1a8a3a 0 36%, #f5d300 36% 64%, #1a8a3a 64%)'
   },
   {
     id: 'dellagiovanna',
@@ -360,7 +360,7 @@ const stadiums: Stadium[] = [
     position: [-58.5349, -34.6141],
     espnVenueId: '10976',
     espnTeamId: '2',
-    kit: 'linear-gradient(90deg, #111111 0% 20%, #ffffff 20% 40%, #1b2f6b 40% 60%, #ffffff 60% 80%, #111111 80% 100%)'
+    kit: 'linear-gradient(90deg, #1b2f6b 0 20%, #ffffff 20% 40%, #111111 40% 60%, #ffffff 60% 80%, #1b2f6b 80%)'
   },
   {
     id: 'centenario',
@@ -380,7 +380,7 @@ const stadiums: Stadium[] = [
     position: [-58.6871427, -34.6895719],
     espnVenueId: '6112',
     espnTeamId: '10109',
-    kit: 'linear-gradient(45deg, #ffffff 0 42%, #1d4fa0 42% 58%, #ffffff 58%)'
+    kit: 'linear-gradient(155deg, #ffffff 0 41%, #1d4fa0 41% 59%, #ffffff 59%)'
   },
   {
     id: 'la-quema',
@@ -390,7 +390,8 @@ const stadiums: Stadium[] = [
     position: [-58.5837, -34.4818],
     espnVenueId: '10696',
     espnTeamId: '10145',
-    kit: 'linear-gradient(180deg, #1b2f6b 0 40%, #ffffff 40% 60%, #1b2f6b 60%)'
+    // Upside-down peace sign in white on blue
+    kit: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Crect width='20' height='20' fill='%231b2f6b'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round'%3E%3Ccircle cx='10' cy='10' r='7.2'/%3E%3Cpath d='M10 2.8v14.4M10 10l-5.1-5.1M10 10l5.1-5.1'/%3E%3C/g%3E%3C/svg%3E\") center / cover no-repeat"
   },
   {
     id: 'urbano',
@@ -454,7 +455,7 @@ const stadiums: Stadium[] = [
   },
   {
     id: 'grondona',
-    name: 'Julio H. Grondona',
+    name: 'El Viaducto',
     neighborhood: 'Sarandí, Avellaneda',
     club: 'Arsenal Sarandi',
     position: [-58.3406, -34.6784],
@@ -500,7 +501,7 @@ const stadiums: Stadium[] = [
     position: [-58.5254, -34.5959],
     espnVenueId: '3596',
     espnTeamId: '17705',
-    kit: 'linear-gradient(45deg, #ffffff 0 40%, #c8102e 40% 60%, #ffffff 60%)'
+    kit: 'linear-gradient(180deg, #6b3e26 0 36%, #ffffff 36% 64%, #6b3e26 64%)'
   },
   {
     id: 'jose-manuel-moreno',
@@ -510,7 +511,7 @@ const stadiums: Stadium[] = [
     position: [-58.733, -34.6804],
     espnVenueId: '10990',
     espnTeamId: '17704',
-    kit: 'linear-gradient(45deg, #ffffff 0 40%, #1b2f6b 40% 60%, #ffffff 60%)'
+    kit: 'linear-gradient(115deg, #ffffff 0 40%, #1b2f6b 40% 60%, #ffffff 60%)'
   },
   {
     id: 'hugo-moyano',
@@ -524,7 +525,7 @@ const stadiums: Stadium[] = [
   },
   {
     id: 'inmigrantes',
-    name: 'De los Inmigrantes',
+    name: 'Estadio de los Inmigrantes',
     neighborhood: 'Dock Sud, Avellaneda',
     club: 'Dock Sud',
     position: [-58.3444, -34.6577],
@@ -700,7 +701,8 @@ const venueNicknames: Record<string, string> = {
   'Estadio Más Monumental': 'el Monumental',
   'Presidente Perón (Cilindro de Avellaneda)': 'el Cilindro',
   'Juan Carmelo Zerillo (El Bosque)': 'el Bosque',
-  'Ciudad de Lanús': 'La Fortaleza'
+  'Ciudad de Lanús': 'La Fortaleza',
+  'Julio Humberto Grondona': 'el Viaducto'
 }
 
 // "el Eva Perón", "el Gigante de Alberdi", "La Bombonera": grounds are masculine ("el estadio")
