@@ -319,6 +319,19 @@ function toStadiumMatch(match: LiveMatch, stadium: Stadium, now: number): Stadiu
   }
 }
 
+// "el Eva Perón", "el Gigante de Alberdi", "La Bombonera": grounds are masculine ("el estadio")
+// unless the name already starts with an article
+function withArticle(venue: string) {
+  if (venue === 'otra cancha') return venue
+  // "Estadio de Excursionistas" → "el estadio de Excursionistas";
+  // "Estadio Jorge Luis Hirschi" → "el Jorge Luis Hirschi" (the name alone reads naturally)
+  if (/^Estadio de /.test(venue)) return `el e${venue.slice(1)}`
+  const name = venue.replace(/^Estadio /, '')
+  if (/^El /.test(name)) return `el ${name.slice(3)}`
+  if (/^(La|Las|Los) /.test(name)) return name
+  return `el ${name}`
+}
+
 // Shown between the two scores: the running minute, the kickoff time, or "Final"
 function clockLabel(match: StadiumMatch) {
   if (match.status === 'upcoming') return match.kickoffTime ?? ''
@@ -747,7 +760,7 @@ function App() {
                   <h2>{selectedStadium.name}</h2>
                   <p className="card-place">
                     {selectedMatch.elsewhere
-                      ? `${selectedMatch.status === 'finished' ? 'Se jugó' : 'Se juega'} en ${selectedMatch.elsewhere}`
+                      ? `${selectedMatch.status === 'finished' ? 'Se jugó' : 'Se juega'} en ${withArticle(selectedMatch.elsewhere)}`
                       : selectedStadium.neighborhood}
                   </p>
                 </div>
