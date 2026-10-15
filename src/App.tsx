@@ -321,7 +321,8 @@ function toStadiumMatch(match: LiveMatch, stadium: Stadium, now: number): Stadiu
 
 // How people actually call some grounds, already with their article; wins over ESPN's name
 const venueNicknames: Record<string, string> = {
-  'Estadio de Excursionistas': 'el Coliseo del Bajo Belgrano'
+  'Estadio de Excursionistas': 'el Coliseo del Bajo Belgrano',
+  'Estadio Jorge Luis Hirschi': '1 y 57'
 }
 
 // "el Eva Perón", "el Gigante de Alberdi", "La Bombonera": grounds are masculine ("el estadio")
