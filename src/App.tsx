@@ -702,7 +702,8 @@ const venueNicknames: Record<string, string> = {
   'Presidente Perón (Cilindro de Avellaneda)': 'el Cilindro',
   'Juan Carmelo Zerillo (El Bosque)': 'el Bosque',
   'Ciudad de Lanús': 'La Fortaleza',
-  'Julio Humberto Grondona': 'el Viaducto'
+  'Julio Humberto Grondona': 'el Viaducto',
+  'Estadio Tomás Adolfo Ducó': 'el Ducó'
 }
 
 // "el Eva Perón", "el Gigante de Alberdi", "La Bombonera": grounds are masculine ("el estadio")
@@ -1141,7 +1142,10 @@ function App() {
 
               <div className="card-header">
                 <div>
-                  <p className="card-club">{selectedStadium.club}</p>
+                  <p className="card-club">
+                    <span className="club-kit" style={{ background: selectedStadium.kit }} />
+                    {selectedStadium.club}
+                  </p>
                   <h2>{selectedStadium.name}</h2>
                   <p className="card-place">{selectedStadium.neighborhood}</p>
                 </div>

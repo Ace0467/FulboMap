@@ -390,14 +390,33 @@
   margin-bottom: 10px;
 }
 
-.card-league,
-.card-club {
-  margin: 0 0 4px;
+/* Context: the competition, small and quiet */
+.card-league {
   color: var(--text-muted);
-  font-size: 0.68rem;
+  font-size: 0.6rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
+  opacity: 0.75;
+}
+
+/* The club the ground belongs to, with its shirt as on the map */
+.card-club {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+  color: var(--text);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.club-kit {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
 }
 
 .card-place {
