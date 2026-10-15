@@ -310,7 +310,8 @@ const stadiums: Stadium[] = [
     position: [-58.371, -34.6702],
     espnVenueId: '5555',
     espnTeamId: '11',
-    kit: '#d6111e'
+    // Red with the crest's white sash, top-left to bottom-right
+    kit: 'linear-gradient(45deg, #d6111e 0 40%, #ffffff 40% 60%, #d6111e 60%)'
   },
   {
     id: 'fragata',
