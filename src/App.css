@@ -835,7 +835,11 @@
     right: 0;
     bottom: 0;
     width: auto;
-    max-height: 85vh;
+    /* Fixed tall sheet: peeking shows the top part, dragging up brings it near the top of the screen */
+    height: 88vh;
+    overflow: hidden;
+    /* Opaque, so the header and map don't show through when it's pulled all the way up */
+    background: #111114;
     padding-bottom: calc(18px + env(safe-area-inset-bottom));
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     border-bottom: none;

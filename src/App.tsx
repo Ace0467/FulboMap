@@ -1093,6 +1093,9 @@ function withArticle(venue: string) {
   return `el ${name}`
 }
 
+// How many of the club's next matches the expanded phone sheet lists
+const NEXT_MATCHES_SHOWN = 6
+
 type NextMatch = { id: string; when: string; rival: string; home: boolean; competition: string }
 
 // The club's next upcoming matches after the one on the card (what the expanded sheet lists)
@@ -1105,7 +1108,7 @@ function nextClubMatches(stadium: Stadium, matches: LiveMatch[], shownId: string
         (match.homeTeamId === stadium.espnTeamId || match.awayTeamId === stadium.espnTeamId)
     )
     .sort(byKickoff)
-    .slice(0, 3)
+    .slice(0, NEXT_MATCHES_SHOWN)
     .map((match) => {
       const kickoff = new Date(match.kickoff)
       const home = match.homeTeamId === stadium.espnTeamId
