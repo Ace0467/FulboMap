@@ -390,8 +390,8 @@ const stadiums: Stadium[] = [
     position: [-58.5837, -34.4818],
     espnVenueId: '10696',
     espnTeamId: '10145',
-    // Upside-down peace sign in white on blue
-    kit: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Crect width='20' height='20' fill='%231b2f6b'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round'%3E%3Ccircle cx='10' cy='10' r='7.2'/%3E%3Cpath d='M10 2.8v14.4M10 10l-5.1-5.1M10 10l5.1-5.1'/%3E%3C/g%3E%3C/svg%3E\") center / cover no-repeat"
+    // A white Y inside a ring on blue (the upside-down peace sign without its top stroke)
+    kit: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Crect width='20' height='20' fill='%231b2f6b'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round'%3E%3Ccircle cx='10' cy='10' r='7.2'/%3E%3Cpath d='M10 10v7.2M10 10l-5.1-5.1M10 10l5.1-5.1'/%3E%3C/g%3E%3C/svg%3E\") center / cover no-repeat"
   },
   {
     id: 'urbano',
