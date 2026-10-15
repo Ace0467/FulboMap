@@ -121,10 +121,7 @@ const VENUE_IDS: Record<string, string> = {
 }
 
 const TIME_ZONE = 'America/Argentina/Buenos_Aires'
-const HOUR_MS = 60 * 60 * 1000
-const DAY_MS = 24 * HOUR_MS
-// Finished matches stay on the map for 24 h after the final whistle (kickoff + ~2 h)
-const FINISHED_WINDOW_MS = 27 * HOUR_MS
+const DAY_MS = 24 * 60 * 60 * 1000
 const FIXTURES_TTL_MS = 10 * 60 * 1000
 
 function argentinaDay(date: Date) {
@@ -245,10 +242,11 @@ export async function fetchMatches(now = new Date()): Promise<LiveMatch[]> {
   const matches = new Map<string, LiveMatch>()
   for (const match of [...fixtures, ...scoreboards]) matches.set(match.id, match)
 
-  return [...matches.values()].filter((match) => {
-    if (match.status !== 'finished') return true
-    return now.getTime() - new Date(match.kickoff).getTime() < FINISHED_WINDOW_MS
-  })
+  // Finished matches stay on their ground on matchday and the day after
+  const yesterday = argentinaDay(new Date(now.getTime() - DAY_MS))
+  return [...matches.values()].filter(
+    (match) => match.status !== 'finished' || argentinaDay(new Date(match.kickoff)) >= yesterday
+  )
 }
 
 export async function GET() {

@@ -241,12 +241,7 @@ const kickoffFormat = new Intl.DateTimeFormat('es-AR', {
 })
 
 const TIME_ZONE = 'America/Argentina/Buenos_Aires'
-const HOUR_MS = 60 * 60 * 1000
-const DAY_MS = 24 * HOUR_MS
-// ESPN gives no end time; a match is over roughly two hours after kickoff
-const MATCH_LENGTH_MS = 2 * HOUR_MS
-// A finished match stays on its ground this long after the final whistle
-const FINISHED_HOLD_MS = DAY_MS
+const DAY_MS = 24 * 60 * 60 * 1000
 
 const ymdFormat = new Intl.DateTimeFormat('en-CA', { timeZone: TIME_ZONE })
 const weekdayFormat = new Intl.DateTimeFormat('es-AR', { timeZone: TIME_ZONE, weekday: 'short' })
@@ -269,17 +264,18 @@ const kitByTeam = new Map(stadiums.map((stadium) => [stadium.espnTeamId, stadium
 
 const byKickoff = (a: LiveMatch, b: LiveMatch) => a.kickoff.localeCompare(b.kickoff)
 
-// What a ground shows: a live match, else the last one for 24 h after it ends, else the next one
+// What a ground shows: a live match, else the last one played there on matchday and the
+// day after (a match on the 14th shows until the 15th ends), else the next one
 function pickMatch(stadium: Stadium, matches: LiveMatch[], now: number) {
   const here = matches.filter((match) => match.venueId === stadium.espnVenueId)
   const live = here.find((match) => match.status === 'live')
   if (live) return live
 
+  const yesterday = ymdFormat.format(now - DAY_MS)
   const recent = here
     .filter(
       (match) =>
-        match.status === 'finished' &&
-        now - (new Date(match.kickoff).getTime() + MATCH_LENGTH_MS) < FINISHED_HOLD_MS
+        match.status === 'finished' && ymdFormat.format(new Date(match.kickoff)) >= yesterday
     )
     .sort(byKickoff)
     .at(-1)
