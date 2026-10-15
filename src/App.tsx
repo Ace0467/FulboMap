@@ -595,6 +595,367 @@ const stadiums: Stadium[] = [
     espnTeamId: '17703',
     // The Italian flag
     kit: 'linear-gradient(90deg, #009246 0 33.4%, #ffffff 33.4% 66.6%, #ce2b37 66.6%)'
+  },
+  // Rest of Argentina
+  {
+    id: 'minella',
+    name: 'José María Minella',
+    neighborhood: 'Mar del Plata',
+    club: 'Aldosivi',
+    position: [-57.58241, -38.0179],
+    espnVenueId: '10781',
+    espnTeamId: '9739',
+    kit: 'linear-gradient(90deg, #138a3c 0 50%, #f5c400 50%)'
+  },
+  {
+    id: 'jose-fierro',
+    name: 'Monumental José Fierro',
+    neighborhood: 'San Miguel de Tucumán, Tucumán',
+    club: 'Atlético Tucumán',
+    position: [-65.19954, -26.81289],
+    espnVenueId: '5558',
+    espnTeamId: '9785',
+    kit: 'linear-gradient(90deg, #6cb4e4 0% 20%, #ffffff 20% 40%, #6cb4e4 40% 60%, #ffffff 60% 80%, #6cb4e4 80% 100%)'
+  },
+  {
+    id: 'gigante-de-alberdi',
+    name: 'El Gigante de Alberdi',
+    neighborhood: 'Córdoba',
+    club: 'Belgrano (Córdoba)',
+    position: [-64.20629, -31.40354],
+    espnVenueId: '2736',
+    espnTeamId: '4',
+    kit: '#5cb8ec'
+  },
+  {
+    id: 'alfredo-terrera',
+    name: 'Alfredo Terrera',
+    neighborhood: 'Santiago del Estero',
+    club: 'Central Córdoba (Santiago del Estero)',
+    position: [-64.26438, -27.79384],
+    espnVenueId: '6075',
+    espnTeamId: '11989',
+    kit: 'linear-gradient(90deg, #111111 0% 20%, #ffffff 20% 40%, #111111 40% 60%, #ffffff 60% 80%, #111111 80% 100%)'
+  },
+  {
+    id: 'candini',
+    name: 'Antonio Candini',
+    neighborhood: 'Río Cuarto, Córdoba',
+    club: 'Estudiantes de Río Cuarto',
+    position: [-64.34768, -33.11485],
+    espnVenueId: '8203',
+    espnTeamId: '19685',
+    kit: 'linear-gradient(180deg, #6cb4e4 0 40%, #ffffff 40% 60%, #6cb4e4 60%)'
+  },
+  {
+    id: 'legrotaglie',
+    name: 'Víctor Legrotaglie',
+    neighborhood: 'Mendoza',
+    club: 'Gimnasia (Mendoza)',
+    position: [-68.86424, -32.88425],
+    espnVenueId: '10925',
+    espnTeamId: '11972',
+    kit: 'linear-gradient(90deg, #ffffff 0% 20%, #111111 20% 40%, #ffffff 40% 60%, #111111 60% 80%, #ffffff 80% 100%)'
+  },
+  {
+    id: 'gargantini',
+    name: 'Bautista Gargantini',
+    neighborhood: 'Mendoza',
+    club: 'Independiente Rivadavia',
+    position: [-68.86307, -32.89077],
+    espnVenueId: '3253',
+    espnTeamId: '9744',
+    kit: '#2b2a86'
+  },
+  {
+    id: 'alta-cordoba',
+    name: 'Monumental de Alta Córdoba',
+    neighborhood: 'Córdoba',
+    club: 'Instituto (Córdoba)',
+    position: [-64.18041, -31.3837],
+    espnVenueId: '5557',
+    espnTeamId: '2975',
+    kit: 'linear-gradient(90deg, #d6111e 0% 20%, #ffffff 20% 40%, #d6111e 40% 60%, #ffffff 60% 80%, #d6111e 80% 100%)'
+  },
+  {
+    id: 'marcelo-bielsa',
+    name: 'Coloso Marcelo Bielsa',
+    neighborhood: 'Rosario, Santa Fe',
+    club: 'Newell\x27s Old Boys',
+    position: [-60.66141, -32.95607],
+    espnVenueId: '10794',
+    espnTeamId: '14',
+    kit: 'linear-gradient(90deg, #d6111e 0 50%, #111111 50%)'
+  },
+  {
+    id: 'gigante-de-arroyito',
+    name: 'Gigante de Arroyito',
+    neighborhood: 'Rosario, Santa Fe',
+    club: 'Rosario Central',
+    position: [-60.6745, -32.91402],
+    espnVenueId: '10775',
+    espnTeamId: '17',
+    kit: 'linear-gradient(90deg, #1c3f94 0% 20%, #f5c400 20% 40%, #1c3f94 40% 60%, #f5c400 60% 80%, #1c3f94 80% 100%)'
+  },
+  {
+    id: 'eva-peron-junin',
+    name: 'Eva Perón',
+    neighborhood: 'Junín',
+    club: 'Sarmiento (Junín)',
+    position: [-60.92931, -34.58526],
+    espnVenueId: '10784',
+    espnTeamId: '10158',
+    kit: '#1a8a3a'
+  },
+  {
+    id: 'kempes',
+    name: 'Mario Alberto Kempes',
+    neighborhood: 'Córdoba',
+    club: 'Talleres (Córdoba)',
+    position: [-64.24615, -31.36885],
+    espnVenueId: '10782',
+    espnTeamId: '19',
+    kit: 'linear-gradient(90deg, #1b2f6b 0% 20%, #ffffff 20% 40%, #1b2f6b 40% 60%, #ffffff 60% 80%, #1b2f6b 80% 100%)'
+  },
+  {
+    id: '15-de-abril',
+    name: '15 de Abril',
+    neighborhood: 'Santa Fe',
+    club: 'Unión (Santa Fe)',
+    position: [-60.71568, -31.63195],
+    espnVenueId: '10790',
+    espnTeamId: '20',
+    kit: 'linear-gradient(90deg, #d6111e 0% 20%, #ffffff 20% 40%, #d6111e 40% 60%, #ffffff 60% 80%, #d6111e 80% 100%)'
+  },
+  {
+    id: 'rosenzuaig',
+    name: 'Ofelia Rosenzuaig',
+    neighborhood: 'Carlos Casares',
+    club: 'Agropecuario',
+    position: [-61.37866, -35.6321],
+    espnVenueId: '7454',
+    espnTeamId: '13913',
+    kit: 'radial-gradient(circle closest-side, transparent 72%, #d6111e 75%), #138a3c'
+  },
+  {
+    id: 'nuevo-monumental-rafaela',
+    name: 'Nuevo Monumental',
+    neighborhood: 'Rafaela, Santa Fe',
+    club: 'Atletico Rafaela',
+    position: [-61.4814, -31.25077],
+    espnVenueId: '10982',
+    espnTeamId: '9747',
+    kit: 'linear-gradient(90deg, #6cb4e4 0% 20%, #ffffff 20% 40%, #6cb4e4 40% 60%, #ffffff 60% 80%, #6cb4e4 80% 100%)'
+  },
+  {
+    id: 'martearena',
+    name: 'Padre Ernesto Martearena',
+    neighborhood: 'Salta',
+    club: 'Central Norte',
+    position: [-65.41912, -24.8209],
+    espnVenueId: '5717',
+    espnTeamId: '11993',
+    kit: 'linear-gradient(135deg, #ffffff 0 50%, #111111 50%)'
+  },
+  {
+    id: 'juan-alberto-garcia',
+    name: 'Juan Alberto García',
+    neighborhood: 'Resistencia, Chaco',
+    club: 'Chaco For Ever',
+    position: [-58.96712, -27.46987],
+    espnVenueId: '10973',
+    espnTeamId: '11963',
+    kit: 'linear-gradient(90deg, #111111 0% 20%, #ffffff 20% 40%, #111111 40% 60%, #ffffff 60% 80%, #111111 80% 100%)'
+  },
+  {
+    id: 'eva-peron-bolivar',
+    name: 'Municipal Eva Perón',
+    neighborhood: 'Bolívar',
+    club: 'Ciudad de Bolívar',
+    position: [-61.12187, -36.22356],
+    espnVenueId: '9246',
+    espnTeamId: '21799',
+    kit: '#1f4fd1'
+  },
+  {
+    id: 'brigadier-lopez',
+    name: 'Brigadier López',
+    neighborhood: 'Santa Fe',
+    club: 'Colón (Santa Fe)',
+    position: [-60.72525, -31.66322],
+    espnVenueId: '10983',
+    espnTeamId: '7',
+    kit: 'linear-gradient(90deg, #111111 0 50%, #d6111e 50%)'
+  },
+  {
+    id: 'coliseo-del-golfo',
+    name: 'Coliseo del Golfo',
+    neighborhood: 'Puerto Madryn, Chubut',
+    club: 'Deportivo Madryn',
+    position: [-65.042243, -42.746881],
+    espnVenueId: '4739',
+    espnTeamId: '18260',
+    kit: 'linear-gradient(90deg, #111111 0% 20%, #f5c400 20% 40%, #111111 40% 60%, #f5c400 60% 80%, #111111 80% 100%)'
+  },
+  {
+    id: 'sperdutti',
+    name: 'Omar Higinio Sperdutti',
+    neighborhood: 'Maipú, Mendoza',
+    club: 'Deportivo Maipú',
+    position: [-68.79341, -32.98321],
+    espnVenueId: '8432',
+    espnTeamId: '11978',
+    kit: 'linear-gradient(45deg, #ffffff 0 40%, #d6111e 40% 60%, #ffffff 60%)'
+  },
+  {
+    id: '23-de-agosto',
+    name: '23 de Agosto',
+    neighborhood: 'San Salvador de Jujuy, Jujuy',
+    club: 'Gimnasia y Esgrima (Jujuy)',
+    position: [-65.29093, -24.19855],
+    espnVenueId: '10565',
+    espnTeamId: '5263',
+    kit: 'linear-gradient(180deg, #ffffff 0 36%, #6cb4e4 36% 64%, #ffffff 64%)'
+  },
+  {
+    id: 'gigante-del-norte',
+    name: 'El Gigante del Norte',
+    neighborhood: 'Salta',
+    club: 'Gimnasia y Tiro (Salta)',
+    position: [-65.40419, -24.78336],
+    espnVenueId: '9878',
+    espnTeamId: '10743',
+    kit: 'linear-gradient(90deg, #6cb4e4 0% 20%, #ffffff 20% 40%, #6cb4e4 40% 60%, #ffffff 60% 80%, #6cb4e4 80% 100%)'
+  },
+  {
+    id: 'gambarte',
+    name: 'Feliciano Gambarte',
+    neighborhood: 'Godoy Cruz, Mendoza',
+    club: 'Godoy Cruz Antonio Tomba',
+    position: [-68.83915, -32.92033],
+    espnVenueId: '8699',
+    espnTeamId: '6756',
+    kit: 'linear-gradient(90deg, #1d4fa0 0% 20%, #ffffff 20% 40%, #1d4fa0 40% 60%, #ffffff 60% 80%, #1d4fa0 80% 100%)'
+  },
+  {
+    id: 'arturo-miranda',
+    name: 'Arturo Miranda',
+    neighborhood: 'Santiago del Estero',
+    club: 'Güemes',
+    position: [-64.27636, -27.792797],
+    espnVenueId: '8656',
+    espnTeamId: '18284',
+    kit: 'linear-gradient(180deg, #d6111e 0 50%, #1d4fa0 50%)'
+  },
+  {
+    id: 'castiglione',
+    name: 'Estadio Castiglione',
+    neighborhood: 'Santiago del Estero',
+    club: 'Mitre (Santiago del Estero)',
+    position: [-64.248926, -27.792962],
+    espnVenueId: '10984',
+    espnTeamId: '11990',
+    kit: 'linear-gradient(90deg, #f5c400 0% 20%, #111111 20% 40%, #f5c400 40% 60%, #111111 60% 80%, #f5c400 80% 100%)'
+  },
+  {
+    id: 'grella',
+    name: 'Presbítero Bartolomé Grella',
+    neighborhood: 'Paraná, Entre Ríos',
+    club: 'Patronato',
+    position: [-60.50765, -31.74302],
+    espnVenueId: '10979',
+    espnTeamId: '10374',
+    kit: 'linear-gradient(90deg, #d6111e 0% 20%, #111111 20% 40%, #d6111e 40% 60%, #111111 60% 80%, #d6111e 80% 100%)'
+  },
+  {
+    id: 'miguel-sancho',
+    name: 'Miguel Sancho',
+    neighborhood: 'Córdoba',
+    club: 'Racing (Córdoba)',
+    position: [-64.14338, -31.38931],
+    espnVenueId: '9464',
+    espnTeamId: '19145',
+    kit: 'linear-gradient(90deg, #6cb4e4 0% 20%, #ffffff 20% 40%, #6cb4e4 40% 60%, #ffffff 60% 80%, #6cb4e4 80% 100%)'
+  },
+  {
+    id: 'hilario-sanchez',
+    name: 'Hilario Sánchez',
+    neighborhood: 'San Juan',
+    club: 'San Martín (San Juan)',
+    position: [-68.5302, -31.51989],
+    espnVenueId: '10795',
+    espnTeamId: '7845',
+    kit: 'linear-gradient(90deg, #138a3c 0% 20%, #111111 20% 40%, #138a3c 40% 60%, #111111 60% 80%, #138a3c 80% 100%)'
+  },
+  {
+    id: 'la-ciudadela',
+    name: 'La Ciudadela',
+    neighborhood: 'San Miguel de Tucumán, Tucumán',
+    club: 'San Martín (Tucumán)',
+    position: [-65.22979, -26.8362],
+    espnVenueId: '6852',
+    espnTeamId: '17814',
+    kit: 'linear-gradient(90deg, #d6111e 0% 20%, #ffffff 20% 40%, #d6111e 40% 60%, #ffffff 60% 80%, #d6111e 80% 100%)'
+  },
+  {
+    id: 'villa-fox',
+    name: 'Gigante de Villa Fox',
+    neighborhood: 'Zárate',
+    club: 'Defensores Unidos',
+    position: [-59.0166, -34.10448],
+    espnVenueId: '6104',
+    espnTeamId: '17697',
+    kit: '#7cc5ee'
+  },
+  {
+    id: 'armenia',
+    name: 'Estadio Armenia',
+    neighborhood: 'Ingeniero Maschwitz, Escobar',
+    club: 'Deportivo Armenio',
+    position: [-58.73028, -34.3762],
+    espnVenueId: '6138',
+    espnTeamId: '10152',
+    kit: 'linear-gradient(180deg, #d90012 0 33.4%, #0033a0 33.4% 66.6%, #f2a800 66.6%)'
+  },
+  {
+    id: 'carlos-v',
+    name: 'Carlos V',
+    neighborhood: 'Jáuregui, Luján',
+    club: 'Flandria',
+    position: [-59.18175, -34.58715],
+    espnVenueId: '10894',
+    espnTeamId: '10156',
+    kit: 'linear-gradient(180deg, #f5c400 0 40%, #111111 40% 60%, #f5c400 60%)'
+  },
+  {
+    id: 'barraza',
+    name: 'Carlos Barraza',
+    neighborhood: 'Pilar',
+    club: 'Real Pilar',
+    position: [-58.91955, -34.46896],
+    espnVenueId: '6131',
+    espnTeamId: '18844',
+    kit: 'linear-gradient(180deg, #ffffff 0 40%, #111111 40% 60%, #ffffff 60%)'
+  },
+  {
+    id: 'villa-dalmine',
+    name: 'Estadio Villa Dálmine',
+    neighborhood: 'Campana',
+    club: 'Villa Dálmine',
+    position: [-58.977886, -34.161593],
+    espnVenueId: '6077',
+    espnTeamId: '10064',
+    kit: '#5a2a82'
+  },
+  {
+    id: 'salice',
+    name: 'Genacio Sálice',
+    neighborhood: 'Berisso',
+    club: 'Villa San Carlos',
+    position: [-57.86188, -34.87319],
+    espnVenueId: '5562',
+    espnTeamId: '10052',
+    kit: 'linear-gradient(180deg, #6cb4e4 0 40%, #ffffff 40% 60%, #6cb4e4 60%)'
   }
 ]
 
@@ -811,9 +1172,14 @@ function addStadiumStands(map: maplibregl.Map) {
   )
 }
 
+// The map opens on Buenos Aires (CABA, conurbano and La Plata); the rest of the country is a pan away
+const AMBA = new maplibregl.LngLatBounds([-58.95, -35.0], [-57.8, -34.35])
+
 function stadiumBounds() {
   const bounds = new maplibregl.LngLatBounds()
-  stadiums.forEach((stadium) => bounds.extend(stadium.position))
+  stadiums
+    .filter((stadium) => AMBA.contains(stadium.position))
+    .forEach((stadium) => bounds.extend(stadium.position))
   return bounds
 }
 

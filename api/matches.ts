@@ -82,7 +82,7 @@ const LEAGUES: Record<string, string> = {
   'conmebol.sudamericana': 'Copa Sudamericana'
 }
 
-// Clubs whose fixtures we follow (CABA, conurbano and La Plata): ESPN team id and the league they play in.
+// Clubs whose fixtures we follow (every Liga Profesional, Primera Nacional and Primera B club): ESPN team id and the league they play in.
 // Top-flight clubs can also be in CONMEBOL cups; everyone plays the Copa Argentina.
 const CLUBS = [
   { teamId: '5', league: 'arg.1' }, // Boca Juniors
@@ -137,7 +137,44 @@ const CLUBS = [
   { teamId: '10147', league: 'arg.3' }, // Brown de Adrogué
   { teamId: '17700', league: 'arg.3' }, // Argentino de Merlo
   { teamId: '17693', league: 'arg.3' }, // Argentino de Quilmes
-  { teamId: '17703', league: 'arg.3' } // Sportivo Italiano
+  { teamId: '17703', league: 'arg.3' }, // Sportivo Italiano
+  // Rest of Argentina
+  { teamId: '9739', league: 'arg.1' }, // Aldosivi
+  { teamId: '9785', league: 'arg.1' }, // Atlético Tucumán
+  { teamId: '4', league: 'arg.1' }, // Belgrano (Córdoba)
+  { teamId: '11989', league: 'arg.1' }, // Central Córdoba (Santiago del Estero)
+  { teamId: '19685', league: 'arg.1' }, // Estudiantes de Río Cuarto
+  { teamId: '11972', league: 'arg.1' }, // Gimnasia (Mendoza)
+  { teamId: '9744', league: 'arg.1' }, // Independiente Rivadavia
+  { teamId: '2975', league: 'arg.1' }, // Instituto (Córdoba)
+  { teamId: '14', league: 'arg.1' }, // Newell's Old Boys
+  { teamId: '17', league: 'arg.1' }, // Rosario Central
+  { teamId: '10158', league: 'arg.1' }, // Sarmiento (Junín)
+  { teamId: '19', league: 'arg.1' }, // Talleres (Córdoba)
+  { teamId: '20', league: 'arg.1' }, // Unión (Santa Fe)
+  { teamId: '13913', league: 'arg.2' }, // Agropecuario
+  { teamId: '9747', league: 'arg.2' }, // Atletico Rafaela
+  { teamId: '11993', league: 'arg.2' }, // Central Norte
+  { teamId: '11963', league: 'arg.2' }, // Chaco For Ever
+  { teamId: '21799', league: 'arg.2' }, // Ciudad de Bolívar
+  { teamId: '7', league: 'arg.2' }, // Colón (Santa Fe)
+  { teamId: '18260', league: 'arg.2' }, // Deportivo Madryn
+  { teamId: '11978', league: 'arg.2' }, // Deportivo Maipú
+  { teamId: '5263', league: 'arg.2' }, // Gimnasia y Esgrima (Jujuy)
+  { teamId: '10743', league: 'arg.2' }, // Gimnasia y Tiro (Salta)
+  { teamId: '6756', league: 'arg.2' }, // Godoy Cruz Antonio Tomba
+  { teamId: '18284', league: 'arg.2' }, // Güemes
+  { teamId: '11990', league: 'arg.2' }, // Mitre (Santiago del Estero)
+  { teamId: '10374', league: 'arg.2' }, // Patronato
+  { teamId: '19145', league: 'arg.2' }, // Racing (Córdoba)
+  { teamId: '7845', league: 'arg.2' }, // San Martín (San Juan)
+  { teamId: '17814', league: 'arg.2' }, // San Martín (Tucumán)
+  { teamId: '17697', league: 'arg.3' }, // Defensores Unidos
+  { teamId: '10152', league: 'arg.3' }, // Deportivo Armenio
+  { teamId: '10156', league: 'arg.3' }, // Flandria
+  { teamId: '18844', league: 'arg.3' }, // Real Pilar
+  { teamId: '10064', league: 'arg.3' }, // Villa Dálmine
+  { teamId: '10052', league: 'arg.3' } // Villa San Carlos
 ]
 
 // Fixture lists name the venue but omit its id, so map our stadiums' ESPN names to ids.
@@ -193,7 +230,43 @@ const VENUE_IDS: Record<string, string> = {
   'Lorenzo Arandilla': '10859',
   'Juan Carlos Brieva': '10697',
   'Estadio de Argentino de Quilmes': '10987',
-  'República de Italia': '5698'
+  'República de Italia': '5698',
+  'José María Minella': '10781',
+  'Monumental Presidente José Fierro': '5558',
+  'El Gigante de Alberdi': '2736',
+  'Alfredo Terrera': '6075',
+  'Ciudad de Río Cuarto Antonio Candini': '8203',
+  'Estadio Víctor Antonio Legrotaglie': '10925',
+  'Bautista Gargantini': '3253',
+  'Monumental Presidente Perón': '5557',
+  'Marcelo Bielsa': '10794',
+  'Gigante de Arroyito': '10775',
+  'Eva Perón': '10784',
+  'Mario Alberto Kempes': '10782',
+  '15 de Abril': '10790',
+  'Estadio Ofelia Rosenzuaig': '7454',
+  'Estadio Nuevo Monumental': '10982',
+  'Padre Ernesto Martearena': '5717',
+  'Estadio Juan Alberto García': '10973',
+  'Estadio Municipal Eva Perón': '9246',
+  'Brigadier Gral. Estanislao López': '10983',
+  'Coliseo del Golfo': '4739',
+  'Estadio Omar Higinio Sperdutti': '8432',
+  '23 de Agosto': '10565',
+  'Monumental de Vicente López': '9878',
+  'Estadio Feliciano Gambarte': '8699',
+  'Arturo Miranda': '8656',
+  'Estadio Castiglione': '10984',
+  'Estadio Presbítero Bartolomé Grella': '10979',
+  'Estadio Miguel Sancho': '9464',
+  'Estadio Ingeniero Hilario Sánchez': '10795',
+  'Estadio La Ciudadela': '6852',
+  'Gigante de Villa Fox': '6104',
+  'Estadio Armenia': '6138',
+  'Carlos V': '10894',
+  'Estadio Municipal de Pilar Carlos Barraza': '6131',
+  'Estadio Villa Dálmine': '6077',
+  'Genacio Sálice': '5562'
 }
 
 const TIME_ZONE = 'America/Argentina/Buenos_Aires'
