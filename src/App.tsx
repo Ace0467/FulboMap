@@ -188,8 +188,9 @@ const stadiums: Stadium[] = [
     position: [-58.4478378, -34.6187654],
     espnVenueId: '10981',
     espnTeamId: '9743',
-    // Green chevron on white with a green inner outline and a line at 3/4 height, as on the crest
-    kit: 'radial-gradient(circle closest-side, transparent 72%, #1a8a3a 75%), linear-gradient(180deg, transparent 0 72%, #1a8a3a 72% 78%, transparent 78%), conic-gradient(from 140deg at 50% 50%, #1a8a3a 0 80deg, #ffffff 80deg)'
+    // Green inner outline, then a green line at 3/4 height with the crest's chevron standing on it
+    // (white below the line, so the chevron is cut there instead of filling the bottom)
+    kit: 'radial-gradient(circle closest-side, transparent 72%, #1a8a3a 75%), linear-gradient(180deg, transparent 0 72%, #1a8a3a 72% 78%, #ffffff 78%), conic-gradient(from 135deg at 50% 46%, #1a8a3a 0 90deg, #ffffff 90deg)'
   },
   {
     id: 'mataderos',
