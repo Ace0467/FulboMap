@@ -17,6 +17,7 @@ export type LiveMatch = {
   id: string
   // ESPN venue id; '' when the venue isn't one we know
   venueId: string
+  venueName: string
   homeTeamId: string
   awayTeamId: string
   homeTeam: string
@@ -164,6 +165,7 @@ function toMatch(event: EspnEvent, competition: string): LiveMatch | null {
   return {
     id: event.id,
     venueId: venue?.id ?? VENUE_IDS[venue?.fullName ?? ''] ?? '',
+    venueName: venue?.fullName ?? '',
     homeTeamId: home.team.id,
     awayTeamId: away.team.id,
     homeTeam: teamName(home),

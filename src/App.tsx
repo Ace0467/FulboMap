@@ -24,6 +24,8 @@ type StadiumMatch = {
   day?: string
   // Shirt of the home side when it's one of our clubs (e.g. Boca playing at the Ducó)
   kit?: string
+  // Set when the club plays at another ground (e.g. away at Banfield)
+  elsewhere?: string
   minute: string
   // Defaults to the stadium's club; differs for cup matches at a neutral venue
   home?: string
@@ -49,8 +51,7 @@ type Stadium = {
   placeholder?: StadiumMatch
 }
 
-// hidden: no match here and the club's next match is at another ground
-type StadiumView = Stadium & { match: StadiumMatch; hidden: boolean }
+type StadiumView = Stadium & { match: StadiumMatch }
 
 const stadiums: Stadium[] = [
   {
@@ -264,15 +265,21 @@ const kitByTeam = new Map(stadiums.map((stadium) => [stadium.espnTeamId, stadium
 
 const byKickoff = (a: LiveMatch, b: LiveMatch) => a.kickoff.localeCompare(b.kickoff)
 
-// What a ground shows: a live match, else the last one played there on matchday and the
-// day after (a match on the 14th shows until the 15th ends), else the next one
+// A ground considers the matches played on it plus its club's matches anywhere (home or away).
+// It shows a live one, else the latest finished on matchday or the day after
+// (a match on the 14th shows until the 15th ends), else the next one.
 function pickMatch(stadium: Stadium, matches: LiveMatch[], now: number) {
-  const here = matches.filter((match) => match.venueId === stadium.espnVenueId)
-  const live = here.find((match) => match.status === 'live')
+  const relevant = matches.filter(
+    (match) =>
+      match.venueId === stadium.espnVenueId ||
+      match.homeTeamId === stadium.espnTeamId ||
+      match.awayTeamId === stadium.espnTeamId
+  )
+  const live = relevant.find((match) => match.status === 'live')
   if (live) return live
 
   const yesterday = ymdFormat.format(now - DAY_MS)
-  const recent = here
+  const recent = relevant
     .filter(
       (match) =>
         match.status === 'finished' && ymdFormat.format(new Date(match.kickoff)) >= yesterday
@@ -281,30 +288,21 @@ function pickMatch(stadium: Stadium, matches: LiveMatch[], now: number) {
     .at(-1)
   if (recent) return recent
 
-  return here.filter((match) => match.status === 'upcoming').sort(byKickoff)[0]
+  return relevant.filter((match) => match.status === 'upcoming').sort(byKickoff)[0]
 }
 
-// True when the club's next (or current) match is at another ground
-function clubPlaysElsewhereNext(stadium: Stadium, matches: LiveMatch[]) {
-  const next = matches
-    .filter(
-      (match) =>
-        match.status !== 'finished' &&
-        (match.homeTeamId === stadium.espnTeamId || match.awayTeamId === stadium.espnTeamId)
-    )
-    .sort(byKickoff)[0]
-  return next !== undefined && next.venueId !== stadium.espnVenueId
-}
-
-function toStadiumMatch(match: LiveMatch, now: number): StadiumMatch {
+function toStadiumMatch(match: LiveMatch, stadium: Stadium, now: number): StadiumMatch {
   const kickoff = new Date(match.kickoff)
   const time = kickoffFormat.format(kickoff)
   const day = dayLabel(kickoff, now)
   const upcoming = match.status === 'upcoming'
+  const playedHere = match.venueId === stadium.espnVenueId
 
   return {
     day,
-    kit: kitByTeam.get(match.homeTeamId),
+    // On its own ground the marker wears the home side's shirt; away matches keep the club's
+    kit: playedHere ? kitByTeam.get(match.homeTeamId) : undefined,
+    elsewhere: playedHere ? undefined : match.venueName || 'otra cancha',
     status: match.status,
     competition: match.competition,
     homeScore: upcoming ? undefined : match.homeScore,
@@ -356,10 +354,12 @@ const statusLabels: Record<StadiumStatus, string> = {
   idle: 'sin partido'
 }
 
-// "próximo · mañana", "finalizado · ayer"; today needs no day
+// "finalizado · ayer"; upcoming matches show their day above the kickoff time instead
 function statusLabel(match: StadiumMatch) {
   const label = statusLabels[match.status]
-  return match.day && match.day !== 'hoy' && match.status !== 'live' ? `${label} · ${match.day}` : label
+  return match.status === 'finished' && match.day && match.day !== 'hoy'
+    ? `${label} · ${match.day}`
+    : label
 }
 
 // Layers that add clutter around the stadiums: POIs, transit stops, minor street names, shields
@@ -519,11 +519,12 @@ function App() {
     () =>
       stadiums.map((stadium) => {
         const match = pickMatch(stadium, liveMatches, fetchedAt)
-        if (match) return { ...stadium, hidden: false, match: toStadiumMatch(match, fetchedAt) }
-        if (clubPlaysElsewhereNext(stadium, liveMatches)) {
-          return { ...stadium, hidden: true, match: noMatch }
+        return {
+          ...stadium,
+          match: match
+            ? toStadiumMatch(match, stadium, fetchedAt)
+            : (stadium.placeholder ?? noMatch)
         }
-        return { ...stadium, hidden: false, match: stadium.placeholder ?? noMatch }
       }),
     [liveMatches, fetchedAt]
   )
@@ -531,11 +532,10 @@ function App() {
   const liveCount = stadiumViews.filter((stadium) => stadium.match.status === 'live').length
 
   const visibleStadiums = useMemo(() => {
-    const shown = stadiumViews.filter((stadium) => !stadium.hidden)
-    if (activeFilter === 'todos') return shown
+    if (activeFilter === 'todos') return stadiumViews
     const status: StadiumStatus =
       activeFilter === 'en vivo' ? 'live' : activeFilter === 'próximos' ? 'upcoming' : 'finished'
-    return shown.filter((stadium) => stadium.match.status === status)
+    return stadiumViews.filter((stadium) => stadium.match.status === status)
   }, [activeFilter, stadiumViews])
 
   useEffect(() => {
@@ -745,7 +745,11 @@ function App() {
                     {selectedMatch.status === 'idle' ? selectedStadium.club : selectedMatch.competition}
                   </p>
                   <h2>{selectedStadium.name}</h2>
-                  <p className="card-place">{selectedStadium.neighborhood}</p>
+                  <p className="card-place">
+                    {selectedMatch.elsewhere
+                      ? `${selectedMatch.status === 'finished' ? 'Se jugó' : 'Se juega'} en ${selectedMatch.elsewhere}`
+                      : selectedStadium.neighborhood}
+                  </p>
                 </div>
               </div>
 
@@ -760,6 +764,9 @@ function App() {
                     </strong>
                     <strong className="score-value">{selectedMatch.homeScore}</strong>
                     <span className={`score-clock ${selectedMatch.status}`}>
+                      {selectedMatch.status === 'upcoming' && (
+                        <small className="score-day">{selectedMatch.day}</small>
+                      )}
                       {clockLabel(selectedMatch)}
                     </span>
                     <strong className="score-value">{selectedMatch.awayScore}</strong>
