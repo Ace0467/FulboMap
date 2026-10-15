@@ -33,6 +33,8 @@ type StadiumMatch = {
   goals: Goal[]
   // Only shown when the stadium has no match
   description?: string
+  // Channels for upcoming and live matches, when known
+  tv?: string
   // Short label shown above the marker, e.g. "BOC 2-1 RIV"
   pin?: string
 }
@@ -1052,6 +1054,7 @@ function toStadiumMatch(match: LiveMatch, stadium: Stadium, now: number): Stadiu
     home: match.homeTeam,
     rival: match.awayTeam,
     goals: match.goals,
+    tv: match.status === 'finished' ? undefined : match.tv,
     // Only matches with a result get a label on the map; upcoming ones show it on the card
     pin: upcoming
       ? undefined
@@ -1547,6 +1550,17 @@ function App() {
                     </span>
                     <strong className="score-value">{selectedMatch.awayScore}</strong>
                     <strong className="score-team away">{selectedMatch.rival}</strong>
+                    {selectedMatch.tv && (
+                      <span className="score-tv">
+                        <span className="tv-label">TV</span>
+                        {/* One unbreakable chunk per channel, so lines wrap between channels */}
+                        {selectedMatch.tv.split(' · ').map((channel) => (
+                          <span key={channel} className="tv-channel">
+                            {channel}
+                          </span>
+                        ))}
+                      </span>
+                    )}
                     {selectedMatch.elsewhere && (
                       <span className="score-venue">
                         {selectedMatch.status === 'finished' ? 'Se jugó' : 'Se juega'} en{' '}

@@ -508,6 +508,41 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Channels: a full-width line under the score, before the venue line */
+.score-tv {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2px 6px;
+  margin-top: 10px;
+  color: var(--text);
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.tv-channel {
+  white-space: nowrap;
+}
+
+.tv-channel + .tv-channel::before {
+  content: '·';
+  margin-right: 6px;
+  color: var(--text-muted);
+}
+
+.tv-label {
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: var(--text);
+  color: var(--bg);
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
 /* Where the match is played, when it isn't this ground: a full-width line under the score */
 .score-venue {
   grid-column: 1 / -1;
