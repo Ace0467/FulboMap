@@ -806,8 +806,8 @@ const stadiums: Stadium[] = [
     position: [-68.79341, -32.98321],
     espnVenueId: '8432',
     espnTeamId: '11978',
-    // Black, white and red diagonal thirds
-    kit: 'linear-gradient(135deg, #111111 0 33.3%, #ffffff 33.3% 66.7%, #d6111e 66.7%)'
+    // Black, white and red diagonal stripes (the white one a bit narrower)
+    kit: 'linear-gradient(135deg, #111111 0 38%, #ffffff 38% 62%, #d6111e 62%)'
   },
   {
     id: '23-de-agosto',
