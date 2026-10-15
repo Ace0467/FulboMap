@@ -1126,8 +1126,8 @@ function App() {
           {detailOpen && (
             <div className="info-card">
               <div className="card-topline">
-                <span className={`status-tag ${selectedMatch.status}`}>
-                  {statusLabel(selectedMatch)}
+                <span className="card-league">
+                  {selectedMatch.status === 'idle' ? '' : selectedMatch.competition}
                 </span>
                 <button
                   type="button"
@@ -1141,13 +1141,15 @@ function App() {
 
               <div className="card-header">
                 <div>
-                  <p className="card-league">
-                    {selectedMatch.status === 'idle' ? selectedStadium.club : selectedMatch.competition}
-                  </p>
+                  <p className="card-club">{selectedStadium.club}</p>
                   <h2>{selectedStadium.name}</h2>
                   <p className="card-place">{selectedStadium.neighborhood}</p>
                 </div>
               </div>
+
+              <span className={`status-tag ${selectedMatch.status}`}>
+                {statusLabel(selectedMatch)}
+              </span>
 
               {selectedMatch.status === 'idle' ? (
                 <p className="description">{selectedMatch.description}</p>

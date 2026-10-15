@@ -335,7 +335,11 @@
 }
 
 .card-topline {
-  margin-bottom: 14px;
+  margin-bottom: 10px;
+}
+
+.card-topline .card-league {
+  margin: 0;
 }
 
 .status-tag {
@@ -378,10 +382,16 @@
 }
 
 .card-header {
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
-.card-league {
+/* Status sits right above the score box */
+.info-card > .status-tag {
+  margin-bottom: 10px;
+}
+
+.card-league,
+.card-club {
   margin: 0 0 4px;
   color: var(--text-muted);
   font-size: 0.68rem;
