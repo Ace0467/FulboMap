@@ -220,6 +220,377 @@ const stadiums: Stadium[] = [
     espnVenueId: '6110',
     espnTeamId: '10054',
     kit: 'linear-gradient(90deg, #138a3c 0 25%, #ffffff 25% 50%, #138a3c 50% 75%, #ffffff 75%)'
+  },
+  // Conurbano and La Plata
+  {
+    id: 'lanus',
+    name: 'La Fortaleza',
+    neighborhood: 'Lanús',
+    club: 'Lanús',
+    position: [-58.3838, -34.7176],
+    espnVenueId: '10792',
+    espnTeamId: '12',
+    kit: '#7a1f3d'
+  },
+  {
+    id: 'zerillo',
+    name: 'El Bosque',
+    neighborhood: 'La Plata',
+    club: 'Gimnasia La Plata',
+    position: [-57.9324153, -34.9109655],
+    espnVenueId: '1731',
+    espnTeamId: '9',
+    kit: 'linear-gradient(180deg, #ffffff 0 36%, #1b2f6b 36% 64%, #ffffff 64%)'
+  },
+  {
+    id: 'hirschi',
+    name: 'Estadio UNO',
+    neighborhood: 'La Plata',
+    club: 'Estudiantes de La Plata',
+    position: [-57.9388416, -34.9119093],
+    espnVenueId: '8296',
+    espnTeamId: '8',
+    kit: 'linear-gradient(90deg, #d6111e 0% 20%, #ffffff 20% 40%, #d6111e 40% 60%, #ffffff 60% 80%, #d6111e 80% 100%)'
+  },
+  {
+    id: 'sola',
+    name: 'Florencio Sola',
+    neighborhood: 'Banfield, Lomas de Zamora',
+    club: 'Banfield',
+    position: [-58.3876, -34.7508],
+    espnVenueId: '10789',
+    espnTeamId: '235',
+    kit: 'linear-gradient(90deg, #138a3c 0% 20%, #ffffff 20% 40%, #138a3c 40% 60%, #ffffff 60% 80%, #138a3c 80% 100%)'
+  },
+  {
+    id: 'tomaghello',
+    name: 'Norberto Tomaghello',
+    neighborhood: 'Gobernador Costa, Florencio Varela',
+    club: 'Defensa y Justicia',
+    position: [-58.2865, -34.8218],
+    espnVenueId: '5554',
+    espnTeamId: '8950',
+    kit: 'radial-gradient(circle closest-side, transparent 72%, #1a8a3a 75%), #f5d300'
+  },
+  {
+    id: 'dellagiovanna',
+    name: 'José Dellagiovanna',
+    neighborhood: 'Victoria, San Fernando',
+    club: 'Tigre',
+    position: [-58.5422664, -34.4493072],
+    espnVenueId: '5354',
+    espnTeamId: '7767',
+    kit: 'linear-gradient(180deg, #1c3f94 0 36%, #d6111e 36% 64%, #1c3f94 64%)'
+  },
+  {
+    id: 'vicente-lopez',
+    name: 'Ciudad de Vicente López',
+    neighborhood: 'Florida, Vicente López',
+    club: 'Platense',
+    position: [-58.4817, -34.5403],
+    espnVenueId: '3250',
+    espnTeamId: '7764',
+    kit: 'linear-gradient(180deg, #ffffff 0 36%, #5a3a22 36% 64%, #ffffff 64%)'
+  },
+  {
+    id: 'cilindro',
+    name: 'El Cilindro',
+    neighborhood: 'Avellaneda',
+    club: 'Racing Club',
+    position: [-58.3685, -34.6676],
+    espnVenueId: '5349',
+    espnTeamId: '15',
+    kit: 'linear-gradient(90deg, #6cb4e4 0% 20%, #ffffff 20% 40%, #6cb4e4 40% 60%, #ffffff 60% 80%, #6cb4e4 80% 100%)'
+  },
+  {
+    id: 'libertadores',
+    name: 'Libertadores de América',
+    neighborhood: 'Avellaneda',
+    club: 'Independiente',
+    position: [-58.371, -34.6702],
+    espnVenueId: '5555',
+    espnTeamId: '11',
+    kit: '#d6111e'
+  },
+  {
+    id: 'fragata',
+    name: 'Fragata Presidente Sarmiento',
+    neighborhood: 'Isidro Casanova, La Matanza',
+    club: 'Almirante Brown',
+    position: [-58.5869, -34.6951],
+    espnVenueId: '10975',
+    espnTeamId: '9740',
+    kit: 'linear-gradient(90deg, #111111 0% 25%, #f5c400 25% 50%, #111111 50% 75%, #f5c400 75% 100%)'
+  },
+  {
+    id: 'caseros',
+    name: 'Ciudad de Caseros',
+    neighborhood: 'Caseros, Tres de Febrero',
+    club: 'Estudiantes (Buenos Aires)',
+    position: [-58.5563, -34.6059],
+    espnVenueId: '10566',
+    espnTeamId: '17352',
+    kit: 'linear-gradient(90deg, #ffffff 0% 20%, #111111 20% 40%, #ffffff 40% 60%, #111111 60% 80%, #ffffff 80% 100%)'
+  },
+  {
+    id: 'beranger',
+    name: 'Alfredo Beranger',
+    neighborhood: 'Temperley, Lomas de Zamora',
+    club: 'Temperley',
+    position: [-58.4, -34.7824],
+    espnVenueId: '10978',
+    espnTeamId: '10162',
+    kit: '#7cc5ee'
+  },
+  {
+    id: 'libertarios',
+    name: 'Libertarios Unidos',
+    neighborhood: 'Florida Oeste, Vicente López',
+    club: 'Colegiales',
+    position: [-58.5255, -34.5381],
+    espnVenueId: '10972',
+    espnTeamId: '10149',
+    kit: 'linear-gradient(135deg, #1b2f6b 0 30%, #f5c400 30% 38%, #d6111e 38% 62%, #f5c400 62% 70%, #1b2f6b 70%)'
+  },
+  {
+    id: 'tres-de-febrero',
+    name: 'Tres de Febrero',
+    neighborhood: 'Villa Raffo, Tres de Febrero',
+    club: 'Almagro',
+    position: [-58.5349, -34.6141],
+    espnVenueId: '10976',
+    espnTeamId: '2',
+    kit: 'linear-gradient(90deg, #111111 0% 20%, #ffffff 20% 40%, #1b2f6b 40% 60%, #ffffff 60% 80%, #111111 80% 100%)'
+  },
+  {
+    id: 'centenario',
+    name: 'Centenario',
+    neighborhood: 'Quilmes',
+    club: 'Quilmes',
+    position: [-58.252, -34.7418],
+    espnVenueId: '5351',
+    espnTeamId: '2741',
+    kit: 'linear-gradient(135deg, #ffffff 0 42%, #1b2f6b 42% 58%, #ffffff 58%)'
+  },
+  {
+    id: 'midland',
+    name: 'Ferrocarril Midland',
+    neighborhood: 'Libertad, Merlo',
+    club: 'Midland',
+    position: [-58.6871427, -34.6895719],
+    espnVenueId: '6112',
+    espnTeamId: '10109',
+    kit: 'linear-gradient(45deg, #ffffff 0 42%, #1d4fa0 42% 58%, #ffffff 58%)'
+  },
+  {
+    id: 'la-quema',
+    name: 'La Quema',
+    neighborhood: 'Boulogne, San Isidro',
+    club: 'Acassuso',
+    position: [-58.5837, -34.4818],
+    espnVenueId: '10696',
+    espnTeamId: '10145',
+    kit: 'linear-gradient(180deg, #1b2f6b 0 40%, #ffffff 40% 60%, #1b2f6b 60%)'
+  },
+  {
+    id: 'urbano',
+    name: 'Nuevo Francisco Urbano',
+    neighborhood: 'Morón',
+    club: 'Deportivo Morón',
+    position: [-58.6318, -34.662],
+    espnVenueId: '10568',
+    espnTeamId: '10154',
+    kit: 'radial-gradient(circle closest-side, transparent 72%, #d6111e 75%), #ffffff'
+  },
+  {
+    id: 'malvinas',
+    name: 'Malvinas Argentinas',
+    neighborhood: 'Los Polvorines, Malvinas Argentinas',
+    club: 'San Miguel',
+    position: [-58.7064, -34.5135],
+    espnVenueId: '6100',
+    espnTeamId: '10058',
+    kit: 'linear-gradient(90deg, #138a3c 0% 20%, #ffffff 20% 40%, #138a3c 40% 60%, #ffffff 60% 80%, #138a3c 80% 100%)'
+  },
+  {
+    id: '20-de-octubre',
+    name: '20 de Octubre',
+    neighborhood: 'Tristán Suárez, Ezeiza',
+    club: 'Tristán Suárez',
+    position: [-58.5633, -34.8907],
+    espnVenueId: '10567',
+    espnTeamId: '10163',
+    kit: 'linear-gradient(90deg, #1b2f6b 0% 20%, #ffffff 20% 40%, #1b2f6b 40% 60%, #ffffff 60% 80%, #1b2f6b 80% 100%)'
+  },
+  {
+    id: 'chacarita',
+    name: 'Chacarita Juniors',
+    neighborhood: 'Villa Maipú, San Martín',
+    club: 'Chacarita Juniors',
+    position: [-58.5280731, -34.5673051],
+    espnVenueId: '10974',
+    espnTeamId: '6',
+    kit: 'linear-gradient(90deg, #d6111e 0% 20%, #111111 20% 40%, #ffffff 40% 60%, #111111 60% 80%, #d6111e 80% 100%)'
+  },
+  {
+    id: 'baletto',
+    name: 'Osvaldo Baletto',
+    neighborhood: 'Isla Maciel, Avellaneda',
+    club: 'San Telmo',
+    position: [-58.3529, -34.6439],
+    espnVenueId: '6109',
+    espnTeamId: '10157',
+    kit: 'linear-gradient(90deg, #1b2f6b 0% 20%, #6cb4e4 20% 40%, #1b2f6b 40% 60%, #6cb4e4 60% 80%, #1b2f6b 80% 100%)'
+  },
+  {
+    id: 'gallardon',
+    name: 'Eduardo Gallardón',
+    neighborhood: 'Lomas de Zamora',
+    club: 'Los Andes',
+    position: [-58.42, -34.7552],
+    espnVenueId: '3322',
+    espnTeamId: '13',
+    kit: 'linear-gradient(90deg, #d6111e 0% 14%, #ffffff 14% 29%, #d6111e 29% 43%, #ffffff 43% 57%, #d6111e 57% 71%, #ffffff 71% 86%, #d6111e 86% 100%)'
+  },
+  {
+    id: 'grondona',
+    name: 'Julio H. Grondona',
+    neighborhood: 'Sarandí, Avellaneda',
+    club: 'Arsenal Sarandi',
+    position: [-58.3406, -34.6784],
+    espnVenueId: '5355',
+    espnTeamId: '2635',
+    kit: 'linear-gradient(135deg, #6cb4e4 0 36%, #d6111e 36% 64%, #6cb4e4 64%)'
+  },
+  {
+    id: 'laferrere',
+    name: 'Ciudad de Laferrere',
+    neighborhood: 'Gregorio de Laferrere, La Matanza',
+    club: 'Deportivo Laferrere',
+    position: [-58.5925, -34.7526],
+    espnVenueId: '6099',
+    espnTeamId: '17695',
+    kit: 'linear-gradient(90deg, #138a3c 0% 20%, #ffffff 20% 40%, #138a3c 40% 60%, #ffffff 60% 80%, #138a3c 80% 100%)'
+  },
+  {
+    id: 'ituzaingo',
+    name: 'Estadio de Ituzaingó',
+    neighborhood: 'Ituzaingó',
+    club: 'Ituzaingó',
+    position: [-58.6637, -34.6658],
+    espnVenueId: '6123',
+    espnTeamId: '10105',
+    kit: 'linear-gradient(135deg, #138a3c 0 42%, #ffffff 42% 58%, #138a3c 58%)'
+  },
+  {
+    id: 'comelli',
+    name: 'Pablo Comelli',
+    neighborhood: 'Remedios de Escalada, Lanús',
+    club: 'Talleres de Remedios',
+    position: [-58.4040146, -34.7216382],
+    espnVenueId: '6108',
+    espnTeamId: '10161',
+    kit: 'linear-gradient(90deg, #ffffff 0% 20%, #d6111e 20% 40%, #ffffff 40% 60%, #d6111e 60% 80%, #ffffff 80% 100%)'
+  },
+  {
+    id: 'villa-lynch',
+    name: 'Monumental de Villa Lynch',
+    neighborhood: 'Villa Lynch, San Martín',
+    club: 'UAI Urquiza',
+    position: [-58.5254, -34.5959],
+    espnVenueId: '3596',
+    espnTeamId: '17705',
+    kit: 'linear-gradient(45deg, #ffffff 0 40%, #c8102e 40% 60%, #ffffff 60%)'
+  },
+  {
+    id: 'jose-manuel-moreno',
+    name: 'José Manuel Moreno',
+    neighborhood: 'Merlo',
+    club: 'Deportivo Merlo',
+    position: [-58.733, -34.6804],
+    espnVenueId: '10990',
+    espnTeamId: '17704',
+    kit: 'linear-gradient(45deg, #ffffff 0 40%, #1b2f6b 40% 60%, #ffffff 60%)'
+  },
+  {
+    id: 'hugo-moyano',
+    name: 'Hugo Moyano',
+    neighborhood: '9 de Abril, Esteban Echeverría',
+    club: 'Camioneros',
+    position: [-58.491, -34.7531],
+    espnVenueId: '10238',
+    espnTeamId: '18662',
+    kit: 'radial-gradient(circle closest-side, transparent 72%, #ffffff 75%), #138a3c'
+  },
+  {
+    id: 'inmigrantes',
+    name: 'De los Inmigrantes',
+    neighborhood: 'Dock Sud, Avellaneda',
+    club: 'Dock Sud',
+    position: [-58.3444, -34.6577],
+    espnVenueId: '10989',
+    espnTeamId: '10103',
+    kit: 'linear-gradient(90deg, #1d4fa0 0% 20%, #f5c400 20% 40%, #1d4fa0 40% 60%, #f5c400 60% 80%, #1d4fa0 80% 100%)'
+  },
+  {
+    id: 'juan-antonio-arias',
+    name: 'Juan Antonio Arias',
+    neighborhood: 'Villegas, La Matanza',
+    club: 'Liniers',
+    position: [-58.5516, -34.7034],
+    espnVenueId: '11160',
+    espnTeamId: '10107',
+    kit: 'conic-gradient(#6cb4e4 0 25%, #ffffff 25% 50%, #6cb4e4 50% 75%, #ffffff 75%)'
+  },
+  {
+    id: 'boga',
+    name: 'Francisco Boga',
+    neighborhood: 'Burzaco, Almirante Brown',
+    club: 'San Martín (Burzaco)',
+    position: [-58.4015308, -34.8199867],
+    espnVenueId: '10988',
+    espnTeamId: '17692',
+    kit: 'linear-gradient(135deg, #1b2f6b 0 42%, #ffffff 42% 58%, #1b2f6b 58%)'
+  },
+  {
+    id: 'arandilla',
+    name: 'Lorenzo Arandilla',
+    neighborhood: 'Adrogué, Almirante Brown',
+    club: 'Brown de Adrogué',
+    position: [-58.3798016, -34.8064121],
+    espnVenueId: '10859',
+    espnTeamId: '10147',
+    kit: 'conic-gradient(at 50% 82%, #111111 0 22deg, #d6111e 22deg 44deg, #111111 44deg 316deg, #d6111e 316deg 338deg, #111111 338deg)'
+  },
+  {
+    id: 'brieva',
+    name: 'Juan Carlos Brieva',
+    neighborhood: 'Merlo',
+    club: 'Argentino de Merlo',
+    position: [-58.731, -34.6461],
+    espnVenueId: '10697',
+    espnTeamId: '17700',
+    kit: 'linear-gradient(90deg, #6cb4e4 0% 20%, #ffffff 20% 40%, #6cb4e4 40% 60%, #ffffff 60% 80%, #6cb4e4 80% 100%)'
+  },
+  {
+    id: 'argentino-quilmes',
+    name: 'Estadio de Argentino de Quilmes',
+    neighborhood: 'Quilmes',
+    club: 'Argentino de Quilmes',
+    position: [-58.249, -34.7154],
+    espnVenueId: '10987',
+    espnTeamId: '17693',
+    kit: 'linear-gradient(135deg, #6cb4e4 0 42%, #ffffff 42% 58%, #6cb4e4 58%)'
+  },
+  {
+    id: 'republica-de-italia',
+    name: 'República de Italia',
+    neighborhood: 'Ciudad Evita, La Matanza',
+    club: 'Sportivo Italiano',
+    position: [-58.5172, -34.738],
+    espnVenueId: '5698',
+    espnTeamId: '17703',
+    kit: 'linear-gradient(180deg, #1f5fbf 0 38%, #138a3c 38% 46%, #ffffff 46% 54%, #d6111e 54% 62%, #1f5fbf 62%)'
   }
 ]
 
@@ -322,7 +693,12 @@ function toStadiumMatch(match: LiveMatch, stadium: Stadium, now: number): Stadiu
 // How people actually call some grounds, already with their article; wins over ESPN's name
 const venueNicknames: Record<string, string> = {
   'Estadio de Excursionistas': 'el Coliseo del Bajo Belgrano',
-  'Estadio Jorge Luis Hirschi': '1 y 57'
+  'Estadio Jorge Luis Hirschi': '1 y 57',
+  'Alberto José Armando (La Bombonera)': 'La Bombonera',
+  'Estadio Más Monumental': 'el Monumental',
+  'Presidente Perón (Cilindro de Avellaneda)': 'el Cilindro',
+  'Juan Carmelo Zerillo (El Bosque)': 'el Bosque',
+  'Ciudad de Lanús': 'La Fortaleza'
 }
 
 // "el Eva Perón", "el Gigante de Alberdi", "La Bombonera": grounds are masculine ("el estadio")

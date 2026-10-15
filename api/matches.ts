@@ -82,7 +82,7 @@ const LEAGUES: Record<string, string> = {
   'conmebol.sudamericana': 'Copa Sudamericana'
 }
 
-// CABA clubs whose fixtures we follow: ESPN team id and the league they play in.
+// Clubs whose fixtures we follow (CABA, conurbano and La Plata): ESPN team id and the league they play in.
 // Top-flight clubs can also be in CONMEBOL cups; everyone plays the Copa Argentina.
 const CLUBS = [
   { teamId: '5', league: 'arg.1' }, // Boca Juniors
@@ -99,7 +99,45 @@ const CLUBS = [
   { teamId: '9743', league: 'arg.2' }, // Ferro Carril Oeste
   { teamId: '236', league: 'arg.2' }, // Nueva Chicago
   { teamId: '14074', league: 'arg.3' }, // Comunicaciones
-  { teamId: '10054', league: 'arg.3' } // Excursionistas
+  { teamId: '10054', league: 'arg.3' }, // Excursionistas
+  // Conurbano and La Plata
+  { teamId: '12', league: 'arg.1' }, // Lanús
+  { teamId: '9', league: 'arg.1' }, // Gimnasia La Plata
+  { teamId: '8', league: 'arg.1' }, // Estudiantes de La Plata
+  { teamId: '235', league: 'arg.1' }, // Banfield
+  { teamId: '8950', league: 'arg.1' }, // Defensa y Justicia
+  { teamId: '7767', league: 'arg.1' }, // Tigre
+  { teamId: '7764', league: 'arg.1' }, // Platense
+  { teamId: '15', league: 'arg.1' }, // Racing Club
+  { teamId: '11', league: 'arg.1' }, // Independiente
+  { teamId: '9740', league: 'arg.2' }, // Almirante Brown
+  { teamId: '17352', league: 'arg.2' }, // Estudiantes (Buenos Aires)
+  { teamId: '10162', league: 'arg.2' }, // Temperley
+  { teamId: '10149', league: 'arg.2' }, // Colegiales
+  { teamId: '2', league: 'arg.2' }, // Almagro
+  { teamId: '2741', league: 'arg.2' }, // Quilmes
+  { teamId: '10109', league: 'arg.2' }, // Midland
+  { teamId: '10145', league: 'arg.2' }, // Acassuso
+  { teamId: '10154', league: 'arg.2' }, // Deportivo Morón
+  { teamId: '10058', league: 'arg.2' }, // San Miguel
+  { teamId: '10163', league: 'arg.2' }, // Tristán Suárez
+  { teamId: '6', league: 'arg.2' }, // Chacarita Juniors
+  { teamId: '10157', league: 'arg.2' }, // San Telmo
+  { teamId: '13', league: 'arg.2' }, // Los Andes
+  { teamId: '2635', league: 'arg.3' }, // Arsenal Sarandi
+  { teamId: '17695', league: 'arg.3' }, // Deportivo Laferrere
+  { teamId: '10105', league: 'arg.3' }, // Ituzaingó
+  { teamId: '10161', league: 'arg.3' }, // Talleres de Remedios
+  { teamId: '17705', league: 'arg.3' }, // UAI Urquiza
+  { teamId: '17704', league: 'arg.3' }, // Deportivo Merlo
+  { teamId: '18662', league: 'arg.3' }, // Camioneros
+  { teamId: '10103', league: 'arg.3' }, // Dock Sud
+  { teamId: '10107', league: 'arg.3' }, // Liniers
+  { teamId: '17692', league: 'arg.3' }, // San Martín (Burzaco)
+  { teamId: '10147', league: 'arg.3' }, // Brown de Adrogué
+  { teamId: '17700', league: 'arg.3' }, // Argentino de Merlo
+  { teamId: '17693', league: 'arg.3' }, // Argentino de Quilmes
+  { teamId: '17703', league: 'arg.3' } // Sportivo Italiano
 ]
 
 // Fixture lists name the venue but omit its id, so map our stadiums' ESPN names to ids.
@@ -118,7 +156,44 @@ const VENUE_IDS: Record<string, string> = {
   'Estadio Arquitecto Ricardo Etcheverri': '10981',
   'República de Mataderos': '10980',
   'Alfredo Ramos': '3643',
-  'Estadio de Excursionistas': '6110'
+  'Estadio de Excursionistas': '6110',
+  'Ciudad de Lanús': '10792',
+  'Juan Carmelo Zerillo (El Bosque)': '1731',
+  'Estadio Jorge Luis Hirschi': '8296',
+  'Florencio Solá': '10789',
+  'Norberto Tomaghello': '5554',
+  'Monumental de Victoria (José Dellagiovanna)': '5354',
+  'Ciudad de Vicente López': '3250',
+  'Presidente Perón (Cilindro de Avellaneda)': '5349',
+  'Estadio Libertadores de América': '5555',
+  'Fragata Presidente Sarmiento': '10975',
+  'Estadio Ciudad de Caseros': '10566',
+  'Alfredo Beranger': '10978',
+  'Estadio Libertarios Unidos': '10972',
+  'Tres de Febrero': '10976',
+  'Estadio Centenario Ciudad de Quilmes': '5351',
+  'Estadio Ferrocarril Midland': '6112',
+  'La Quema': '10696',
+  'Estadio Nuevo Francisco Urbano': '10568',
+  'Malvinas Argentinas (Los Polvorines)': '6100',
+  'Estadio 20 de Octubre': '10567',
+  'Chacarita Juniors': '10974',
+  'Dr. Osvaldo Baletto': '6109',
+  'Eduardo Gallardón': '3322',
+  'Julio Humberto Grondona': '5355',
+  'Estadio Ciudad De Laferrere': '6099',
+  'Estadio de Ituzaingó': '6123',
+  'Estadio Pablo Comelli': '6108',
+  'Monumental de Villa Lynch': '3596',
+  'José Manuel Moreno': '10990',
+  'Estadio Hugo Moyano': '10238',
+  'De Los Inmigrantes': '10989',
+  'Juan Antonio Arias': '11160',
+  'Francisco Boga': '10988',
+  'Lorenzo Arandilla': '10859',
+  'Juan Carlos Brieva': '10697',
+  'Estadio de Argentino de Quilmes': '10987',
+  'República de Italia': '5698'
 }
 
 const TIME_ZONE = 'America/Argentina/Buenos_Aires'
