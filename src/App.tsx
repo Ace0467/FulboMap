@@ -314,8 +314,9 @@ function toStadiumMatch(match: LiveMatch, now: number): StadiumMatch {
     home: match.homeTeam,
     rival: match.awayTeam,
     goals: match.goals,
+    // Only matches with a result get a label on the map; upcoming ones show it on the card
     pin: upcoming
-      ? `${match.homeAbbr}-${match.awayAbbr} ${day === 'hoy' ? time : day}`
+      ? undefined
       : `${match.homeAbbr} ${match.homeScore}-${match.awayScore} ${match.awayAbbr}`
   }
 }
