@@ -20,6 +20,10 @@ type StadiumMatch = {
   awayScore?: string
   // "20:30", only while the match hasn't started
   kickoffTime?: string
+  // "hoy", "mañana", "jue 16/10"…; shown next to the status for upcoming and finished matches
+  day?: string
+  // Shirt of the home side when it's one of our clubs (e.g. Boca playing at the Ducó)
+  kit?: string
   minute: string
   // Defaults to the stadium's club; differs for cup matches at a neutral venue
   home?: string
@@ -38,13 +42,15 @@ type Stadium = {
   club: string
   position: [number, number]
   espnVenueId: string
+  espnTeamId: string
   // Club shirt as a CSS background, drawn inside the marker dot
   kit: string
   // Shown when the club has no real match today
   placeholder?: StadiumMatch
 }
 
-type StadiumView = Stadium & { match: StadiumMatch }
+// hidden: no match here and the club's next match is at another ground
+type StadiumView = Stadium & { match: StadiumMatch; hidden: boolean }
 
 const stadiums: Stadium[] = [
   {
@@ -54,6 +60,7 @@ const stadiums: Stadium[] = [
     club: 'Boca Juniors',
     position: [-58.3649163, -34.6355171],
     espnVenueId: '5348',
+    espnTeamId: '5',
     kit: 'linear-gradient(180deg, #0a3a8c 0 34%, #f5b800 34% 66%, #0a3a8c 66%)',
     placeholder: {
       status: 'live',
@@ -77,6 +84,7 @@ const stadiums: Stadium[] = [
     club: 'River Plate',
     position: [-58.4497385, -34.5452932],
     espnVenueId: '10786',
+    espnTeamId: '16',
     kit: 'linear-gradient(135deg, #ffffff 0 36%, #d6111e 36% 64%, #ffffff 64%)'
   },
   {
@@ -86,6 +94,7 @@ const stadiums: Stadium[] = [
     club: 'San Lorenzo',
     position: [-58.4401364, -34.6520908],
     espnVenueId: '10791',
+    espnTeamId: '18',
     kit: 'linear-gradient(90deg, #1b3a8a 0 25%, #c8102e 25% 50%, #1b3a8a 50% 75%, #c8102e 75%)'
   },
   {
@@ -95,6 +104,7 @@ const stadiums: Stadium[] = [
     club: 'Vélez Sarsfield',
     position: [-58.5206788, -34.6353382],
     espnVenueId: '10761',
+    espnTeamId: '21',
     kit: 'conic-gradient(at 50% 82%, #ffffff 0 22deg, #1d4fa0 22deg 44deg, #ffffff 44deg 316deg, #1d4fa0 316deg 338deg, #ffffff 338deg)'
   },
   {
@@ -104,6 +114,7 @@ const stadiums: Stadium[] = [
     club: 'Huracán',
     position: [-58.3965055, -34.6434694],
     espnVenueId: '10783',
+    espnTeamId: '10',
     // Red H on white
     kit: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23d91a21' d='M5 4h3v4.5h4V4h3v12h-3v-4.5H8V16H5z'/%3E%3C/svg%3E\") center / 78% no-repeat, #ffffff"
   },
@@ -114,6 +125,7 @@ const stadiums: Stadium[] = [
     club: 'Argentinos Juniors',
     position: [-58.4726194, -34.6061215],
     espnVenueId: '10785',
+    espnTeamId: '3',
     // Red with a white sash, inside a blue inner outline
     kit: 'radial-gradient(circle closest-side, transparent 60%, #1d4fa0 63%), linear-gradient(45deg, #e30613 0 43%, #ffffff 43% 57%, #e30613 57%)'
   },
@@ -124,6 +136,7 @@ const stadiums: Stadium[] = [
     club: 'Deportivo Riestra',
     position: [-58.4435109, -34.6533436],
     espnVenueId: '10787',
+    espnTeamId: '17702',
     kit: 'linear-gradient(180deg, #ffffff 0 34%, #111111 34% 66%, #ffffff 66%)'
   },
   {
@@ -133,6 +146,7 @@ const stadiums: Stadium[] = [
     club: 'Barracas Central',
     position: [-58.3967965, -34.6475809],
     espnVenueId: '10793',
+    espnTeamId: '10060',
     kit: 'linear-gradient(90deg, #d6111e 0 20%, #ffffff 20% 40%, #d6111e 40% 60%, #ffffff 60% 80%, #d6111e 80%)'
   },
   {
@@ -142,6 +156,7 @@ const stadiums: Stadium[] = [
     club: 'All Boys',
     position: [-58.4977469, -34.6165101],
     espnVenueId: '10985',
+    espnTeamId: '9786',
     kit: 'linear-gradient(135deg, #ffffff 0 36%, #111111 36% 64%, #ffffff 64%)'
   },
   {
@@ -151,6 +166,7 @@ const stadiums: Stadium[] = [
     club: 'Atlanta',
     position: [-58.4441846, -34.5909876],
     espnVenueId: '5670',
+    espnTeamId: '10146',
     kit: 'linear-gradient(90deg, #1d4fa0 0 25%, #f5c400 25% 50%, #1d4fa0 50% 75%, #f5c400 75%)'
   },
   {
@@ -160,6 +176,7 @@ const stadiums: Stadium[] = [
     club: 'Defensores de Belgrano',
     position: [-58.4618769, -34.5412006],
     espnVenueId: '10977',
+    espnTeamId: '10151',
     kit: 'linear-gradient(90deg, #d6111e 0 25%, #111111 25% 50%, #d6111e 50% 75%, #111111 75%)'
   },
   {
@@ -169,6 +186,7 @@ const stadiums: Stadium[] = [
     club: 'Ferro Carril Oeste',
     position: [-58.4478378, -34.6187654],
     espnVenueId: '10981',
+    espnTeamId: '9743',
     // Green chevron on white with a green inner outline, as on the crest
     kit: 'radial-gradient(circle closest-side, transparent 72%, #1a8a3a 75%), conic-gradient(from 140deg at 50% 42%, #1a8a3a 0 80deg, #ffffff 80deg)'
   },
@@ -179,6 +197,7 @@ const stadiums: Stadium[] = [
     club: 'Nueva Chicago',
     position: [-58.4995224, -34.6680105],
     espnVenueId: '10980',
+    espnTeamId: '236',
     kit: 'linear-gradient(90deg, #138a3c 0 25%, #111111 25% 50%, #138a3c 50% 75%, #111111 75%)'
   },
   {
@@ -188,6 +207,7 @@ const stadiums: Stadium[] = [
     club: 'Comunicaciones',
     position: [-58.4884999, -34.5938106],
     espnVenueId: '3643',
+    espnTeamId: '14074',
     kit: 'linear-gradient(90deg, #f5c400 0 50%, #111111 50%)'
   },
   {
@@ -197,6 +217,7 @@ const stadiums: Stadium[] = [
     club: 'Excursionistas',
     position: [-58.4429075, -34.5589889],
     espnVenueId: '6110',
+    espnTeamId: '10054',
     kit: 'linear-gradient(90deg, #138a3c 0 25%, #ffffff 25% 50%, #138a3c 50% 75%, #ffffff 75%)'
   }
 ]
@@ -207,7 +228,7 @@ const noMatch: StadiumMatch = {
   minute: '',
   rival: '',
   goals: [],
-  description: 'Hoy no hay partido en este estadio.'
+  description: 'No hay partidos próximos en este estadio.'
 }
 
 const REFRESH_MS = 60_000
@@ -219,11 +240,75 @@ const kickoffFormat = new Intl.DateTimeFormat('es-AR', {
   hourCycle: 'h23'
 })
 
-function toStadiumMatch(match: LiveMatch): StadiumMatch {
-  const time = kickoffFormat.format(new Date(match.kickoff))
+const TIME_ZONE = 'America/Argentina/Buenos_Aires'
+const HOUR_MS = 60 * 60 * 1000
+const DAY_MS = 24 * HOUR_MS
+// ESPN gives no end time; a match is over roughly two hours after kickoff
+const MATCH_LENGTH_MS = 2 * HOUR_MS
+// A finished match stays on its ground this long after the final whistle
+const FINISHED_HOLD_MS = DAY_MS
+
+const ymdFormat = new Intl.DateTimeFormat('en-CA', { timeZone: TIME_ZONE })
+const weekdayFormat = new Intl.DateTimeFormat('es-AR', { timeZone: TIME_ZONE, weekday: 'short' })
+const dayMonthFormat = new Intl.DateTimeFormat('es-AR', {
+  timeZone: TIME_ZONE,
+  day: 'numeric',
+  month: 'numeric'
+})
+
+// "hoy", "mañana", "ayer" or "jue 16/10", in Argentine time
+function dayLabel(date: Date, now: number) {
+  const day = ymdFormat.format(date)
+  if (day === ymdFormat.format(now)) return 'hoy'
+  if (day === ymdFormat.format(now + DAY_MS)) return 'mañana'
+  if (day === ymdFormat.format(now - DAY_MS)) return 'ayer'
+  return `${weekdayFormat.format(date).replace('.', '')} ${dayMonthFormat.format(date)}`
+}
+
+const kitByTeam = new Map(stadiums.map((stadium) => [stadium.espnTeamId, stadium.kit]))
+
+const byKickoff = (a: LiveMatch, b: LiveMatch) => a.kickoff.localeCompare(b.kickoff)
+
+// What a ground shows: a live match, else the last one for 24 h after it ends, else the next one
+function pickMatch(stadium: Stadium, matches: LiveMatch[], now: number) {
+  const here = matches.filter((match) => match.venueId === stadium.espnVenueId)
+  const live = here.find((match) => match.status === 'live')
+  if (live) return live
+
+  const recent = here
+    .filter(
+      (match) =>
+        match.status === 'finished' &&
+        now - (new Date(match.kickoff).getTime() + MATCH_LENGTH_MS) < FINISHED_HOLD_MS
+    )
+    .sort(byKickoff)
+    .at(-1)
+  if (recent) return recent
+
+  return here.filter((match) => match.status === 'upcoming').sort(byKickoff)[0]
+}
+
+// True when the club's next (or current) match is at another ground
+function clubPlaysElsewhereNext(stadium: Stadium, matches: LiveMatch[]) {
+  const next = matches
+    .filter(
+      (match) =>
+        match.status !== 'finished' &&
+        (match.homeTeamId === stadium.espnTeamId || match.awayTeamId === stadium.espnTeamId)
+    )
+    .sort(byKickoff)[0]
+  return next !== undefined && next.venueId !== stadium.espnVenueId
+}
+
+function toStadiumMatch(match: LiveMatch, now: number): StadiumMatch {
+  const kickoff = new Date(match.kickoff)
+  const time = kickoffFormat.format(kickoff)
+  const day = dayLabel(kickoff, now)
   const upcoming = match.status === 'upcoming'
 
   return {
+    day,
+    kit: kitByTeam.get(match.homeTeamId),
     status: match.status,
     competition: match.competition,
     homeScore: upcoming ? undefined : match.homeScore,
@@ -234,7 +319,7 @@ function toStadiumMatch(match: LiveMatch): StadiumMatch {
     rival: match.awayTeam,
     goals: match.goals,
     pin: upcoming
-      ? `${match.homeAbbr}-${match.awayAbbr} ${time}`
+      ? `${match.homeAbbr}-${match.awayAbbr} ${day === 'hoy' ? time : day}`
       : `${match.homeAbbr} ${match.homeScore}-${match.awayScore} ${match.awayAbbr}`
   }
 }
@@ -263,8 +348,8 @@ function scorerLines(goals: Goal[], side: Goal['side']): ScorerLine[] {
 const filters: { key: Filter; label: string }[] = [
   { key: 'todos', label: 'todos' },
   { key: 'en vivo', label: 'en vivo' },
-  { key: 'próximos', label: 'próximos hoy' },
-  { key: 'finalizados', label: 'finalizados hoy' }
+  { key: 'próximos', label: 'próximos' },
+  { key: 'finalizados', label: 'finalizados' }
 ]
 
 const statusLabels: Record<StadiumStatus, string> = {
@@ -272,6 +357,12 @@ const statusLabels: Record<StadiumStatus, string> = {
   upcoming: 'próximo',
   finished: 'finalizado',
   idle: 'sin partido'
+}
+
+// "próximo · mañana", "finalizado · ayer"; today needs no day
+function statusLabel(match: StadiumMatch) {
+  const label = statusLabels[match.status]
+  return match.day && match.day !== 'hoy' && match.status !== 'live' ? `${label} · ${match.day}` : label
 }
 
 // Layers that add clutter around the stadiums: POIs, transit stops, minor street names, shields
@@ -402,6 +493,7 @@ function App() {
   const [liveMatches, setLiveMatches] = useState<LiveMatch[]>([])
   const [loadingMatches, setLoadingMatches] = useState(false)
   const [matchesError, setMatchesError] = useState(false)
+  const [fetchedAt, setFetchedAt] = useState(() => Date.now())
 
   const loadMatches = useCallback(async () => {
     setLoadingMatches(true)
@@ -410,6 +502,7 @@ function App() {
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
       const data = (await response.json()) as MatchesResponse
       setLiveMatches(data.matches)
+      setFetchedAt(Date.now())
       setMatchesError(false)
     } catch (error) {
       console.error(error)
@@ -428,22 +521,24 @@ function App() {
   const stadiumViews = useMemo<StadiumView[]>(
     () =>
       stadiums.map((stadium) => {
-        const match = liveMatches.find((liveMatch) => liveMatch.venueId === stadium.espnVenueId)
-        return {
-          ...stadium,
-          match: match ? toStadiumMatch(match) : (stadium.placeholder ?? noMatch)
+        const match = pickMatch(stadium, liveMatches, fetchedAt)
+        if (match) return { ...stadium, hidden: false, match: toStadiumMatch(match, fetchedAt) }
+        if (clubPlaysElsewhereNext(stadium, liveMatches)) {
+          return { ...stadium, hidden: true, match: noMatch }
         }
+        return { ...stadium, hidden: false, match: stadium.placeholder ?? noMatch }
       }),
-    [liveMatches]
+    [liveMatches, fetchedAt]
   )
 
   const liveCount = stadiumViews.filter((stadium) => stadium.match.status === 'live').length
 
   const visibleStadiums = useMemo(() => {
-    if (activeFilter === 'todos') return stadiumViews
+    const shown = stadiumViews.filter((stadium) => !stadium.hidden)
+    if (activeFilter === 'todos') return shown
     const status: StadiumStatus =
       activeFilter === 'en vivo' ? 'live' : activeFilter === 'próximos' ? 'upcoming' : 'finished'
-    return stadiumViews.filter((stadium) => stadium.match.status === status)
+    return shown.filter((stadium) => stadium.match.status === status)
   }, [activeFilter, stadiumViews])
 
   useEffect(() => {
@@ -522,7 +617,6 @@ function App() {
         markerElement.setAttribute('aria-label', stadium.name)
         markerElement.title = `${stadium.club} · ${stadium.name}`
         markerElement.innerHTML = '<span class="marker-pin"></span><span class="marker-dot"></span>'
-        markerElement.querySelector<HTMLElement>('.marker-dot')!.style.background = stadium.kit
         markerElement.addEventListener('click', () => {
           setSelectedId(stadium.id)
           setDetailOpen(true)
@@ -571,6 +665,9 @@ function App() {
       markerElement.classList.add(stadium.match.status)
       markerElement.style.display = visibleIds.has(stadium.id) ? 'flex' : 'none'
       markerElement.classList.toggle('selected', stadium.id === selectedId)
+
+      const dot = markerElement.querySelector<HTMLElement>('.marker-dot')
+      if (dot) dot.style.background = stadium.match.kit ?? stadium.kit
 
       const pin = markerElement.querySelector<HTMLElement>('.marker-pin')
       if (pin) {
@@ -633,7 +730,7 @@ function App() {
             <div className="info-card">
               <div className="card-topline">
                 <span className={`status-tag ${selectedMatch.status}`}>
-                  {statusLabels[selectedMatch.status]}
+                  {statusLabel(selectedMatch)}
                 </span>
                 <button
                   type="button"
