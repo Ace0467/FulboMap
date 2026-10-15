@@ -806,8 +806,8 @@ const stadiums: Stadium[] = [
     position: [-68.79341, -32.98321],
     espnVenueId: '8432',
     espnTeamId: '11978',
-    // Black, white and red vertical thirds
-    kit: 'linear-gradient(90deg, #111111 0 33.3%, #ffffff 33.3% 66.7%, #d6111e 66.7%)'
+    // Black, white and red diagonal thirds
+    kit: 'linear-gradient(135deg, #111111 0 33.3%, #ffffff 33.3% 66.7%, #d6111e 66.7%)'
   },
   {
     id: '23-de-agosto',
@@ -948,7 +948,8 @@ const stadiums: Stadium[] = [
     position: [-58.977886, -34.161593],
     espnVenueId: '6077',
     espnTeamId: '10064',
-    kit: '#5a2a82'
+    // As on the crest: violet left half, white right half with violet horizontal stripes
+    kit: 'linear-gradient(90deg, #5a2a82 0 50%, transparent 50%), repeating-linear-gradient(180deg, #ffffff 0 12.5%, #5a2a82 12.5% 25%)'
   },
   {
     id: 'salice',
