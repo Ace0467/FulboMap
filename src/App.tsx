@@ -319,9 +319,15 @@ function toStadiumMatch(match: LiveMatch, stadium: Stadium, now: number): Stadiu
   }
 }
 
+// How people actually call some grounds, already with their article; wins over ESPN's name
+const venueNicknames: Record<string, string> = {
+  'Estadio de Excursionistas': 'el Coliseo del Bajo Belgrano'
+}
+
 // "el Eva Perón", "el Gigante de Alberdi", "La Bombonera": grounds are masculine ("el estadio")
 // unless the name already starts with an article
 function withArticle(venue: string) {
+  if (venueNicknames[venue]) return venueNicknames[venue]
   if (venue === 'otra cancha') return venue
   // "Estadio de Excursionistas" → "el estadio de Excursionistas";
   // "Estadio Jorge Luis Hirschi" → "el Jorge Luis Hirschi" (the name alone reads naturally)
