@@ -1137,7 +1137,7 @@ function scorerLines(goals: Goal[], side: Goal['side']): ScorerLine[] {
   for (const goal of goals.filter((item) => item.side === side)) {
     const player = goal.ownGoal ? `${goal.player} (e/c)` : goal.player
     const line = lines.get(player) ?? { player, minutes: [] }
-    line.minutes.push(goal.penalty ? `${goal.minute} (p)` : goal.minute)
+    line.minutes.push(goal.penalty ? `${goal.minute} (P)` : goal.minute)
     lines.set(player, line)
   }
   return [...lines.values()]
