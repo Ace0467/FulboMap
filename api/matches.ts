@@ -175,6 +175,43 @@ const VENUE_IDS: Record<string, string> = {
   'Genacio Sálice': '5562'
 }
 
+// Our own short names where ESPN's clash (RIV for River and Independiente Rivadavia) or read oddly
+// (AAE for Estudiantes de Río Cuarto), by ESPN team id
+const ABBREVIATIONS: Record<string, string> = {
+  // Liga Profesional
+  '9739': 'ALD', // Aldosivi
+  '3': 'ARG', // Argentinos Juniors
+  '9785': 'ATU', // Atlético Tucumán
+  '5': 'BOC', // Boca Juniors
+  '11989': 'CCO', // Central Córdoba (Santiago del Estero)
+  '19685': 'ERC', // Estudiantes de Río Cuarto
+  '11972': 'GEM', // Gimnasia (Mendoza)
+  '9': 'GIM', // Gimnasia La Plata
+  '9744': 'IRM', // Independiente Rivadavia
+  '10158': 'SAR', // Sarmiento (Junín)
+  '19': 'TAL', // Talleres (Córdoba)
+  '20': 'UNI', // Unión (Santa Fe)
+  // Primera Nacional
+  '9786': 'ALL', // All Boys
+  '9740': 'BRO', // Almirante Brown
+  '6756': 'GOD', // Godoy Cruz Antonio Tomba
+  '236': 'CHI', // Nueva Chicago
+  '17814': 'SMT', // San Martín (Tucumán)
+  '10162': 'TEM', // Temperley
+  // Primera B
+  '17700': 'AGM', // Argentino de Merlo
+  '17693': 'AQU', // Argentino de Quilmes
+  '17692': 'SMB', // San Martín (Burzaco)
+  '17703': 'ITA', // Sportivo Italiano
+  '10161': 'TRE', // Talleres de Remedios
+  '10064': 'DAL' // Villa Dálmine
+}
+
+const abbreviation = (competitor: EspnCompetitor) =>
+  ABBREVIATIONS[competitor.team.id] ??
+  competitor.team.abbreviation ??
+  teamName(competitor).slice(0, 3).toUpperCase()
+
 const TIME_ZONE = 'America/Argentina/Buenos_Aires'
 const DAY_MS = 24 * 60 * 60 * 1000
 
@@ -223,8 +260,8 @@ function toMatch(event: EspnEvent, competition: string): LiveMatch | null {
     awayTeamId: away.team.id,
     homeTeam: teamName(home),
     awayTeam: teamName(away),
-    homeAbbr: home.team.abbreviation ?? teamName(home).slice(0, 3).toUpperCase(),
-    awayAbbr: away.team.abbreviation ?? teamName(away).slice(0, 3).toUpperCase(),
+    homeAbbr: abbreviation(home),
+    awayAbbr: abbreviation(away),
     status,
     homeScore: scoreOf(home),
     awayScore: scoreOf(away),
