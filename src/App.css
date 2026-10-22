@@ -312,6 +312,9 @@
   bottom: 18px;
   z-index: 40;
   width: min(420px, calc(100vw - 32px));
+  /* Never taller than the space under the header; scrolls if a club lists many matches */
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
   padding: 18px;
   border-radius: var(--radius-lg);
   background: var(--surface);
@@ -837,6 +840,7 @@
     width: auto;
     /* Fixed tall sheet: peeking shows the top part, dragging up brings it near the top of the screen */
     height: 88vh;
+    max-height: none;
     overflow: hidden;
     /* Opaque, so the header and map don't show through when it's pulled all the way up */
     background: #111114;

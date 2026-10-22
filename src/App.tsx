@@ -1093,7 +1093,7 @@ function withArticle(venue: string) {
   return `el ${name}`
 }
 
-// How many of the club's next matches the expanded phone sheet lists
+// How many of the club's next matches the card lists
 const NEXT_MATCHES_SHOWN = 6
 
 type NextMatch = { id: string; when: string; rival: string; home: boolean; competition: string }
@@ -1716,8 +1716,8 @@ function App() {
                 </>
               )}
 
-              {/* Phones only: what the sheet reveals when dragged up */}
-              {compact && nextMatches.length > 0 && (
+              {/* The club's next matches (on phones, what the sheet reveals when dragged up) */}
+              {nextMatches.length > 0 && (
                 <div className="next-matches">
                   <p className="next-title">Próximos partidos</p>
                   <ul>
